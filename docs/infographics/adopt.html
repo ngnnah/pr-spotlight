@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Add your team</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .row { display: flex; align-items: stretch; margin-top: 0; }
+  .card { flex: 1; text-align: center; padding: 24px 18px 20px; }
+  .card .big { font-size: 48px; line-height: 1; margin-bottom: 12px; }
+  .card h2 { font-size: 20px; margin-bottom: 6px; }
+  .card p { color: var(--muted); font-size: 15px; }
+  .arrow { display: flex; align-items: center; padding: 0 12px; color: #9aa7b6; font-weight: 700; font-size: 24px; }
+  .card.go { background: var(--lilac); border-color: #d4cbf3; }
+  .card.go p { color: #463a7a; }
+  .needs { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 15px; color: var(--muted); }
+  .needs b { color: var(--ink); margin-right: 4px; }
+  .needs .chip { font-size: 14px; }
+</style></head>
+<body>
+  <div class="row">
+    <div class="card go"><div class="big">📋</div><h2>Paste one prompt</h2><p>into Claude Code, with your team and repos in it</p></div>
+    <div class="arrow">→</div>
+    <div class="card"><div class="big">🛠️</div><h2>Claude sets it up</h2><p>your team's file, everyone's totems, picture ideas from your tech</p></div>
+    <div class="arrow">→</div>
+    <div class="card"><div class="big">👀</div><h2>Read a dry run</h2><p>a recent PR's picture idea and caption, nothing posted</p></div>
+    <div class="arrow">→</div>
+    <div class="card"><div class="big">⏰</div><h2>Turn on the schedule</h2><p>every 15 minutes, on your Mac and your ChatGPT seat</p></div>
+  </div>
+  <div class="needs"><b>You need:</b>
+    <span class="chip lilac">Claude Code</span>
+    <span class="chip green">Codex CLI, signed in to ChatGPT</span>
+    <span class="chip grey">gh CLI with access to your repo</span>
+    <span class="chip grey">uv</span>
+    <span class="chip yellow">a Mac</span>
+  </div>
+<script>document.documentElement.dataset.h = Math.ceil(document.body.getBoundingClientRect().height)</script>
+</body></html>

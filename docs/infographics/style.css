@@ -1,0 +1,48 @@
+/* Shared look for the README's infographics. Render: docs/infographics/render.sh */
+:root {
+  --bg: #f7f9fc;
+  --card: #ffffff;
+  --ink: #1f2a37;
+  --muted: #5b6675;
+  --line: #dbe3ec;
+  --blue: #dcebfb;   --blue-ink: #2f5f9e;
+  --green: #ddf2e3;  --green-ink: #2b7a4b;
+  --yellow: #fff1bf; --yellow-ink: #8a6a12;
+  --lilac: #ebe6fb;  --lilac-ink: #5a4a9c;
+  --grey: #eef1f5;   --grey-ink: #46505d;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1000px; background: var(--bg); }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  padding: 36px 40px 32px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+.sub { color: var(--muted); font-size: 16px; margin-top: 4px; }
+.chip {
+  display: inline-block; font-size: 13px; font-weight: 600;
+  padding: 3px 9px; border-radius: 999px; margin: 2px 4px 0 0; white-space: nowrap;
+}
+.chip.blue { background: var(--blue); color: var(--blue-ink); }
+.chip.green { background: var(--green); color: var(--green-ink); }
+.chip.yellow { background: var(--yellow); color: var(--yellow-ink); }
+.chip.lilac { background: var(--lilac); color: var(--lilac-ink); }
+.chip.grey { background: var(--grey); color: var(--grey-ink); }
+code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; background: var(--grey); padding: 1px 5px; border-radius: 5px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px;
+}
+.num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff;
+  font-size: 14px; font-weight: 700; margin-right: 8px; flex: none;
+}
+.foot {
+  margin-top: 20px; padding: 12px 16px; border-radius: 12px; background: var(--card);
+  border: 1px dashed var(--line); color: var(--muted); font-size: 15px;
+}
+.foot b { color: var(--ink); }
+code { white-space: nowrap; }
