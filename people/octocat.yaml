@@ -1,0 +1,11 @@
+# One file per teammate, named by GitHub login. Anyone without a file stays out of the pictures.
+login: octocat
+name: Mona
+slack_id: ""  # for @-mentions in Slack; optional
+likeness: no  # yes draws them from their photos below; no draws their totem. Only ever yes with their OK.
+totem: an octopus librarian in round glasses, shelving pull requests with eight careful arms
+emoji: "🐙"
+known_for: [GitHub Actions, code review, tidy commit messages]
+jokes:
+  - Reviews eight PRs at once, one per arm.
+photos: []  # e.g. [photos/octocat/face.jpg]; up to five, used only when likeness is yes

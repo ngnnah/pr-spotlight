@@ -1,0 +1,1048 @@
+# Art styles for spotlight pictures, one line each on the look.
+# group_ok: false marks realistic photo looks, used only when at most one person in the picture has a photo.
+# spotlight.py takes the least-used style next, counted from log.jsonl.
+
+- id: one-color-gouache
+  name: One-color gouache
+  prompt: flat matte gouache painting built around one dominant color with soft tonal variations, visible brush texture, simple shapes, calm storybook mood
+  group_ok: true
+- id: siesta-light
+  name: Siesta light
+  prompt: warm afternoon painting with long soft shadows, honey-colored sunlight through windows, hazy dreamy atmosphere, gentle painterly detail
+  group_ok: true
+- id: satellite-land-art
+  name: Satellite land art
+  prompt: giant land art seen from a satellite, fields, rivers and rocks arranged into the picture, top-down aerial view, earthy natural colors
+  group_ok: true
+- id: vietnamese-silk
+  name: Vietnamese silk painting
+  prompt: Vietnamese silk painting, soft translucent washes on silk, delicate outlines, muted rose, jade and ochre palette, quiet graceful composition
+  group_ok: true
+- id: dota2-art
+  name: Dota 2 hero art
+  prompt: dramatic painted fantasy game art in the style of Dota 2 loading screens, rich colors, glowing magic, heroic poses, detailed painterly rendering
+  group_ok: true
+- id: doll-diorama
+  name: Handcrafted doll diorama
+  prompt: cinematic 3D miniature diorama with handcrafted doll characters, felt and wood textures, tiny props, warm lighting, shallow depth of field
+  group_ok: true
+- id: ligne-claire
+  name: Ligne claire comic
+  prompt: Tintin-style ligne claire comic panel, even black outlines, flat clean colors, simple flat backgrounds, adventure mood
+  group_ok: true
+- id: shepard-ink-watercolor
+  name: Ink and watercolor storybook
+  prompt: classic English storybook illustration in fine pen-and-ink with light watercolor wash, woodland scenes, gentle humor, soft muted greens and browns
+  group_ok: true
+- id: mariokart-3d
+  name: Kart-racing 3D
+  prompt: bright glossy 3D cartoon racing game scene, chunky karts, saturated colors, speed lines, sunny track, playful toy-like characters
+  group_ok: true
+- id: gta-loading-art
+  name: Open-world loading-screen art
+  prompt: stylized open-world game loading-screen illustration, bold outlines, sunset neon palette, characters posed in a collage, glossy poster finish
+  group_ok: true
+- id: wooden-toy-diorama
+  name: Wooden toy diorama
+  prompt: tilt-shift photo of a tabletop scene built from painted wooden toys, tiny pieces, warm window light, shallow depth of field
+  group_ok: true
+- id: world-in-a-jar
+  name: World in a jar
+  prompt: a tiny miniature diorama inside a glass jar, a real coin beside the jar for scale, soft studio light, handmade crayon label
+  group_ok: true
+- id: caper-cutout
+  name: Caper paper cutout
+  prompt: layered paper cutout caper scene in the style of a 1960s heist comedy, flat bold shapes, slightly rough edges, tiny drop shadows, playful sly mood
+  group_ok: true
+- id: kahn-cutaway
+  name: Cutaway factory illustration
+  prompt: retro cutaway illustration of a busy machine or factory in the style of mid-century industrial explainers, flat inks, numbered parts, cheerful workers
+  group_ok: true
+- id: travel-gouache
+  name: Travel gouache
+  prompt: sunny gouache travel painting, vintage road-trip poster feel, wide landscapes, flat saturated color blocks, soft grain
+  group_ok: true
+- id: desk-figurine
+  name: Desk figurine
+  prompt: glossy vinyl collectible figure photographed on a desk like a product shot, shallow depth of field, soft reflections, boxed packaging nearby
+  group_ok: true
+- id: rezero-anime
+  name: Fantasy European anime
+  prompt: soft detailed fantasy-European anime look, delicate linework, painted backgrounds, warm dusk lighting, in the style of the Re:Zero anime
+  group_ok: true
+- id: papercut
+  name: Red-and-gold papercut
+  prompt: layered red-and-gold papercut art, intricate lattice patterns, symmetrical festive composition, subtle depth between paper layers
+  group_ok: true
+- id: mushishi-anime
+  name: Quiet painted anime
+  prompt: quiet, muted, hand-painted anime look in the style of the Mushishi anime, misty forests, soft earth tones, calm and mysterious mood
+  group_ok: true
+- id: dragon-ball-anime
+  name: Toriyama anime
+  prompt: in Akira Toriyama's Dragon Ball anime style, bold lines, flat bright colors, big expressive gags, dynamic action poses
+  group_ok: true
+- id: painting-pastiche
+  name: Famous painting pastiche
+  prompt: the scene reimagined in the style and composition of a famous classic painting, visible brushwork, museum-quality oil texture
+  group_ok: true
+- id: frieren-anime
+  name: Painterly fantasy anime
+  prompt: soft painterly fantasy anime look in the style of the Frieren anime, pastel light, gentle linework, wistful quiet mood
+  group_ok: true
+- id: persian-miniature
+  name: Persian miniature
+  prompt: Persian miniature painting, flat matte jewel colors, gold leaf accents, ornate borders, tiny figures in layered garden scenes
+  group_ok: true
+- id: space-age-poster
+  name: 1950s space-age poster
+  prompt: vintage 1950s space-age poster, atomic-era shapes, bold flat colors, rockets and planets, optimistic retro-futurist mood
+  group_ok: true
+- id: ghibli
+  name: Studio Ghibli-style film still
+  prompt: hand-painted anime film still in the style of Studio Ghibli backgrounds, lush greens, soft clouds, gentle light, warm linework
+  group_ok: true
+- id: painted-storybook
+  name: Painted storybook
+  prompt: soft painted storybook illustration with gouache and watercolor textures, visible brushwork, warm gentle colors
+  group_ok: true
+- id: bilibin
+  name: Folk-tale ink and watercolor
+  prompt: Russian folk-tale illustration in the style of Ivan Bilibin, bold black ink outlines, flat watercolor fills, ornamental borders and patterns
+  group_ok: true
+- id: light-particles
+  name: Light and particles
+  prompt: glowing figures made of fine light particles on a dark background, soft bokeh, luminous gold and white, ethereal mood
+  group_ok: true
+- id: fantasy-book
+  name: Fantasy book illustration
+  prompt: hand-painted epic fantasy book illustration, rich oils, sweeping landscapes, warm golden light, detailed heroic scenes
+  group_ok: true
+- id: wow-art
+  name: Warcraft-style game art
+  prompt: chunky stylized MMO fantasy game art in the style of World of Warcraft, painted textures, exaggerated armor and props, vivid colors
+  group_ok: true
+- id: saul-bass-poster
+  name: Saul Bass film poster
+  prompt: minimalist mid-century film poster in the style of Saul Bass, bold flat cut-paper shapes, two or three colors, big empty space
+  group_ok: true
+- id: charley-harper
+  name: Charley Harper minimal
+  prompt: minimalist geometric wildlife illustration in the style of Charley Harper, flat shapes, crisp edges, a few warm colors, wide plain background
+  group_ok: true
+- id: risograph
+  name: Two-color risograph
+  prompt: two-color risograph print, flat ink shapes with slight misregistration and grain, plain paper background, simple bold composition
+  group_ok: true
+- id: ukiyo-e-single
+  name: Ukiyo-e, one subject
+  prompt: Japanese woodblock print with one clear subject, flat color areas, fine outlines, calm empty sky, restrained palette
+  group_ok: true
+- id: flat-editorial
+  name: Flat editorial illustration
+  prompt: flat modern editorial illustration, simple rounded shapes, soft limited palette, one clear idea, generous negative space
+  group_ok: true
+- id: 35mm
+  name: 35mm film photo
+  prompt: grainy 35mm film photograph, natural light, slightly soft focus, muted warm color, candid documentary feel, shallow depth of field, authentic film halation
+  group_ok: false
+- id: anime-key-visual
+  name: Anime key visual
+  prompt: polished modern anime key visual with clean confident linework, luminous saturated color, soft glowing rim light, drifting petals and sparkles, uplifting poster mood
+  group_ok: true
+- id: atomic-age-ad
+  name: Atomic-age advertisement
+  prompt: mid-century atomic-age advertising illustration, flat gouache shapes, optimistic pastel and turquoise palette, streamlined retro-futurist forms, cheerful 1950s print look
+  group_ok: true
+- id: bakery-photo
+  name: Glossy bakery photography
+  prompt: warm glossy food photography of pastries, soft window light, golden crusts, cosy cafe tones, shallow depth of field, appetizing close detail
+  group_ok: false
+- id: black-ink-action
+  name: Black-ink action cartoon
+  prompt: bold black-ink action cartoon, thick brush linework, dynamic motion lines, stark contrast with limited spot color, thrilling energetic mood
+  group_ok: true
+- id: ccd-digicam-2000s
+  name: 2000s digicam snapshot
+  prompt: early-2000s compact digital camera snapshot, harsh built-in flash, slightly blown highlights, soft low-resolution sensor look, raw unposed everyday feel
+  group_ok: false
+- id: circus-lithograph
+  name: Circus poster lithograph
+  prompt: vintage circus-poster color lithograph around 1905, flat layered inks, ornate lettering-free borders, red, gold and cream palette, aged paper grain
+  group_ok: true
+- id: closeup-portrait
+  name: Macro close-up photo
+  prompt: real close-up and macro photography, tight framing, razor-thin depth of field, soft natural light, creamy blurred backgrounds, intimate detail
+  group_ok: false
+- id: comic-cover
+  name: Silver Age comic cover
+  prompt: Silver Age comic-book cover art, bold inked outlines, flat primary colors, halftone dots, dramatic action poses, bright punchy heroic mood
+  group_ok: true
+- id: creative-portrait-photo
+  name: Creative portrait photography
+  prompt: polished editorial portrait photography, staged creative lighting, rich color, shallow depth of field, magazine-quality real photographs
+  group_ok: false
+- id: cyanotype
+  name: Cyanotype sun print
+  prompt: 19th-century cyanotype sun print on watercolor paper, pale washed sky blue and white, soft botanical silhouettes, quiet mirror-still mood
+  group_ok: true
+- id: dong-ho-woodblock
+  name: Dong Ho woodblock
+  prompt: Vietnamese Dong Ho folk woodblock print, bold simple outlines, flat natural pigments on rough do paper, red, yellow and black palette, festive folk charm
+  group_ok: true
+- id: electric-nouveau
+  name: Electric Art Nouveau
+  prompt: 1900 World's Fair illustration blending Art Nouveau posters with period engravings, flowing whiplash lines, electric blue glow, sepia and gold palette
+  group_ok: true
+- id: fashion-gouache
+  name: Fashion-ad gouache
+  prompt: stylish gouache fashion illustration in the layouts of Japanese fashion ads, flat opaque color, elegant elongated figures, bold graphic composition, chic modern mood
+  group_ok: true
+- id: flat-vector
+  name: Flat vector poster
+  prompt: clean flat vector poster, simple geometric shapes, bright cheerful palette, smooth solid fills with no outlines, crisp modern graphic look
+  group_ok: true
+- id: fuji-film-sims
+  name: Fujifilm film simulation
+  prompt: real photographs with Fujifilm film-simulation color, rich muted tones, gentle grain, nostalgic autumn light, soft contrast, small-camera snapshot feel
+  group_ok: false
+- id: golden-age-gouache-nursery
+  name: Golden Age nursery gouache
+  prompt: soft opaque gouache in the manner of mid-century Little Golden Books and Mary Blair, rounded friendly shapes, warm pastel palette, cozy nursery mood
+  group_ok: true
+- id: gouache-autumn-picturebook
+  name: Autumn gouache picture book
+  prompt: warm autumn picture-book look in soft gouache with coloured-pencil texture, rounded textured shapes, painted backgrounds, rust, gold and cream palette
+  group_ok: true
+- id: holiday-card
+  name: Holiday greeting card
+  prompt: festive illustrated holiday greeting cards, warm hand-painted look, red, green and gold palette, cozy seasonal motifs, cheerful print-card charm
+  group_ok: true
+- id: ink-wash-action
+  name: Chinese ink wash
+  prompt: traditional Chinese ink-wash painting on rice paper, fluid black brushwork, misty mountains, pale gray washes with sparing color, serene dynamic mood
+  group_ok: true
+- id: kaiju-poster
+  name: Kaiju movie poster
+  prompt: classic giant-monster movie look, painted lobby-card and poster art, saturated Technicolor-style color, dramatic skies, retro 1930s to 1960s monster-film mood
+  group_ok: true
+- id: kuniyoshi-cats
+  name: Kuniyoshi cat woodblock
+  prompt: Edo-period ukiyo-e woodblock print in the spirit of Utagawa Kuniyoshi's cat prints, bold outlines, flat color, playful humor, soft indigo and rose palette
+  group_ok: true
+- id: lighting-lesson
+  name: Lighting study photos
+  prompt: real photographs studying different kinds of light, from dawn glow to lamplight, natural color, shallow depth of field, soft documentary realism
+  group_ok: false
+- id: magnifier-lens
+  name: Magnifier-lens photo
+  prompt: real photographs seen partly through a round brass-rimmed magnifying glass, enlarged detail in the lens, soft home light, playful mystery mood
+  group_ok: false
+- id: midcentury-guide
+  name: 1950s etiquette guide
+  prompt: 1950s American etiquette-guide illustration, flat limited-color print, tidy stiff poses, pastel pink, mint and cream palette, deadpan retro mood
+  group_ok: true
+- id: natural-history-plate
+  name: Victorian natural history plate
+  prompt: Victorian natural history plate, fine hand-colored engraving on aged cream paper, precise scientific linework, muted watercolor tints, deadpan scholarly mood
+  group_ok: true
+- id: night-flash
+  name: Night flash photo
+  prompt: candid night photograph with direct on-camera flash, dark surroundings, glossy wet streets, harsh bright subject light, gritty urban film-like mood
+  group_ok: false
+- id: oil-impasto
+  name: Oil impasto painting
+  prompt: rich oil painting with thick visible impasto brushstrokes, warm painterly light, saturated glowing color, gallery-painting depth and texture
+  group_ok: true
+- id: palekh-lacquer
+  name: Palekh lacquer miniature
+  prompt: Russian Palekh lacquer miniature, fine tempera detail on glossy black lacquer, gold highlights, jewel-toned figures, folk-tale ornament, delicate stylized elegance
+  group_ok: true
+- id: pastel-studio-lookbook
+  name: Pastel studio lookbook
+  prompt: bright modern studio fashion photographs, clean pastel seamless backdrops, soft even light, crisp magazine lookbook styling, fresh airy mood
+  group_ok: false
+- id: photo-booth
+  name: Photo-booth strips
+  prompt: black-and-white analog photo-booth strips, harsh flash, high contrast, soft grain, slightly misaligned prints with a playful vintage feel
+  group_ok: false
+- id: portra-120-shadow-myth
+  name: Portra 120 film photo
+  prompt: realistic medium-format Kodak Portra 120 film photographs, hard sunlight, warm natural color, fine grain, crisp real shadows, sunlit travel mood
+  group_ok: false
+- id: quattrocento-tempera
+  name: Quattrocento tempera
+  prompt: early Italian Renaissance egg tempera on a gesso panel, pale clear light, fine crackled surface, soft earthy palette, calm precise landscape
+  group_ok: true
+- id: retro-futurist-gouache
+  name: Retro-futurist gouache
+  prompt: 1960s space-age magazine illustration in flat opaque gouache, optimistic cutaway cities, gleaming machines, apricot, coral, gold, sky blue and mint palette
+  group_ok: true
+- id: rinpa-screen
+  name: Rinpa folding screen
+  prompt: Rinpa-school Japanese folding screen painting after Ogata Korin, bold simplified forms, gold-leaf ground, glossy mineral pigments, decorative elegant mood
+  group_ok: true
+- id: sanrio-kawaii
+  name: Sanrio kawaii
+  prompt: Sanrio-style kawaii drawing like Hello Kitty and My Melody, simple round characters, thick clean outlines, pastel pink and sky blue, sweet cute mood
+  group_ok: true
+- id: snow-globe-macro
+  name: Snow-globe macro photo
+  prompt: real macro photographs of handmade glass snow globes, tiny sculpted scenes inside, drifting flakes, glassy reflections, soft varied light, shallow depth of field
+  group_ok: false
+- id: squid-game-look
+  name: Squid Game pastel look
+  prompt: the look of the Squid Game show, with pastel candy-colored sets, stark geometric architecture, bold flat colors, symmetrical framing, eerie playful mood
+  group_ok: true
+- id: sumo-e
+  name: Sumo-e woodblock
+  prompt: Edo-period sumo-e Japanese woodblock print, bold carved outlines, flat color areas, subtle gradation, muted indigo, vermilion and cream on washi
+  group_ok: true
+- id: synthwave
+  name: Synthwave neon
+  prompt: synthwave night illustration, glowing neon magenta and cyan, chrome highlights, light trails, dark purple sky, retro-futurist 1980s mood
+  group_ok: true
+- id: tilt-shift
+  name: Tilt-shift miniature photo
+  prompt: tilt-shift photograph seen from high above, narrow sharp band with blurred edges, saturated color, making the real world look like a toy miniature
+  group_ok: false
+- id: travel-poster-litho-30s
+  name: 1930s travel poster
+  prompt: 1930s lithographic railway travel poster, a few flat inks, clean level horizon, soft gradient sky, calm pale blues and warm cream, minimalist elegance
+  group_ok: true
+- id: ukiyo-e
+  name: Ukiyo-e woodblock
+  prompt: Japanese ukiyo-e woodblock print, flowing carved outlines, flat color with fine gradation, Prussian blue and cream washi palette, Edo-period master's composition
+  group_ok: true
+- id: water-puppet-photo
+  name: Water-puppet stage photo
+  prompt: real photograph of a Vietnamese water-puppet show, carved lacquered wooden puppets on rippling water, red and gold stage, warm theatrical light
+  group_ok: false
+- id: wood-engraved-exlibris
+  name: Wood-engraved bookplate
+  prompt: fine wood-engraved bookplates, crisp black linework on cream paper, delicate cross-hatching, Victorian book-illustration detail, quiet scholarly mood
+  group_ok: true
+- id: yaiba-anime
+  name: 1990s adventure anime
+  prompt: 1990s adventure-comedy anime in the style of the Yaiba anime, bold clean ink lines, bright flat colors, exaggerated comic faces, speed lines, sparkle bursts
+  group_ok: true
+- id: 3d-animated-film
+  name: 3D animated film
+  prompt: cinematic 3D animated film still, soft sculpted characters, warm glowing light, rich saturated color, shallow depth of field, storybook fantasy mood
+  group_ok: true
+- id: aoe-art
+  name: Strategy game box art
+  prompt: painted strategy-game box art in the style of Age of Empires II, isometric view, rich medieval palette, detailed painterly figures and buildings
+  group_ok: true
+- id: autochrome-1910s
+  name: Autochrome 1910s
+  prompt: early colour photograph on an Autochrome plate, soft pointillist grain, muted pastel palette, gentle haze, dreamlike period look
+  group_ok: false
+- id: balloon-photo
+  name: Everyday balloon photo
+  prompt: realistic everyday photograph with natural light, lived-in home and street settings, bright balloons as the one whimsical element, playful documentary feel
+  group_ok: false
+- id: blister-pack
+  name: Toy blister pack
+  prompt: glossy toy-shop product photograph of carded action figures, vinyl and plastic sheen, bold printed card graphics, bright even studio light
+  group_ok: false
+- id: charcoal-rockface
+  name: Charcoal on rock
+  prompt: skilful charcoal drawing made directly on natural rock, smudged tone, bold contour lines, rock cracks and ridges used as drawing, touches of ochre, warm dim light
+  group_ok: true
+- id: city-pop-art
+  name: City-pop illustration
+  prompt: 1980s Japanese city-pop illustration, airbrushed gradients, neon pink and teal dusk palette, clean graphic shapes, breezy nostalgic urban mood
+  group_ok: true
+- id: color-accent
+  name: Black and white, one accent
+  prompt: black-and-white grey-tone scene with a single vivid accent color picked out in one object, graphic contrast, quiet storybook mood
+  group_ok: true
+- id: cycling-poster
+  name: Vintage cycling poster
+  prompt: vintage 1930s cycling poster in flat lithograph colour, bold simple shapes, limited warm palette, dynamic composition, sunny optimistic mood
+  group_ok: true
+- id: doraemon-anime
+  name: Doraemon anime look
+  prompt: in the look of the Doraemon anime, clean round outlines, flat bright colors, simple cheerful backgrounds, soft suburban afternoon light
+  group_ok: true
+- id: escher-lithograph
+  name: Escher-style lithograph
+  prompt: black ink lithograph on cream paper, fine hatching and stippling, tessellations and impossible geometry, one muted dusty grey-blue tone, mind-bending calm
+  group_ok: true
+- id: felt-stop-motion
+  name: Felt stop-motion
+  prompt: handmade felt and fabric stop-motion look, visible stitching and fibers, tiny sets, warm night-light glow, cozy toy-world mood
+  group_ok: true
+- id: flat-vector-anim
+  name: Flat vector animation
+  prompt: clean flat vector animation frames, smooth shapes, limited bright palette, simple backgrounds, bouncy cartoon style
+  group_ok: true
+- id: funhouse-mirror
+  name: Fairground funhouse paint
+  prompt: warm fairground-colored painting, glowing bulbs and bright reds and golds, playful distortion of shapes, festive carnival mood
+  group_ok: true
+- id: golden-book
+  name: Golden Book gouache
+  prompt: 1950s Little Golden Book illustration in soft gouache, crisp shapes, warm printed colour, cozy rounded forms, gentle nostalgic storybook mood
+  group_ok: true
+- id: gray-metallic-sheen
+  name: Gray metallic sheen
+  prompt: photoreal product-photography light on brushed steel, pewter, chrome and graphite, cool silver-gray palette, crisp reflections, sleek polished mood
+  group_ok: false
+- id: hopper-oil
+  name: Hopper-style oil
+  prompt: oil painting in the manner of Edward Hopper, lonely pools of light from glowing windows, deep dusk shadows, flat clean shapes, quiet melancholy
+  group_ok: true
+- id: instamatic-70s
+  name: 1970s Instamatic snapshot
+  prompt: 1970s pocket film camera snapshot, faded warm colors, soft focus, slight grain and flash falloff, unposed imperfect framing, nostalgic mood
+  group_ok: false
+- id: kamishibai
+  name: Kamishibai paper theatre
+  prompt: kamishibai paper-theatre card painting, bold simple shapes, bright opaque colors, expressive outlines, warm nostalgic Japanese storytelling mood
+  group_ok: true
+- id: large-format-interior
+  name: Large-format interior photo
+  prompt: architectural interior photograph on large-format 4x5 colour film, soft afternoon light, precise perspective, calm empty space, fine detail and muted tones
+  group_ok: false
+- id: ligne-moebius
+  name: Moebius-style bande dessinee
+  prompt: European science-fantasy comic in a Moebius-like style, fine ink linework, airy pastel colors, vast landscapes, dreamy adventurous mood
+  group_ok: true
+- id: magritte-oil
+  name: Magritte-style oil
+  prompt: deadpan surrealist oil painting in the manner of Magritte, smooth flat paint, clear sky blues, still afternoon light, one impossible detail, witty calm
+  group_ok: true
+- id: minhwa
+  name: Minhwa folk painting
+  prompt: Joseon-era Korean minhwa folk painting, mineral pigments on paper, flat bold color, decorative lotus and bird motifs, serene auspicious mood
+  group_ok: true
+- id: nature-watercolour
+  name: Nature watercolour
+  prompt: luminous nature watercolour, soft wet washes, delicate natural detail, fresh greens and warm earth tones, gentle airy light, tender mood
+  group_ok: true
+- id: nihonga-silk
+  name: Nihonga on silk
+  prompt: Nihonga mineral pigments on silk, calm misty landscape with deep blue-green layered washes, soft layered tones, hazy depth, quiet contemplative mood
+  group_ok: true
+- id: oil-portrait
+  name: Classical oil portrait
+  prompt: classical oil portrait painting, smooth glazed brushwork, warm chiaroscuro light, rich dark backgrounds, dignified timeless mood
+  group_ok: true
+- id: paleo-art
+  name: Museum paleo-art mural
+  prompt: early-20th-century museum paleo-art mural in oil on canvas, in the manner of Charles R. Knight, rich earthy greens, dramatic prehistoric light
+  group_ok: true
+- id: patchwork-quilt
+  name: Patchwork quilt
+  prompt: patchwork quilt made of stitched fabric patches, visible seams and quilting thread, printed cotton textures, warm homespun palette, cozy handmade mood
+  group_ok: true
+- id: photo-essay
+  name: B&W photo essay
+  prompt: black-and-white documentary photo essay, natural light, grainy film tones, honest candid framing, quiet magazine-spread mood
+  group_ok: false
+- id: postage-stamp
+  name: Postage stamp
+  prompt: commemorative postage stamp design with perforated edge, fine engraved-print illustration, limited inks, ornamental frame, slight paper texture
+  group_ok: true
+- id: rackham-watercolor
+  name: Rackham ink and wash
+  prompt: old fairy-tale illustration in the manner of Arthur Rackham, fine sepia ink linework, muted watercolour washes, gnarled trees, eerie gentle mood
+  group_ok: true
+- id: rey-picture-book
+  name: 1940s picture book
+  prompt: 1940s picture-book illustration in the manner of H. A. Rey, simple bright gouache shapes, clean outlines, primary colors, cheerful uncluttered look
+  group_ok: true
+- id: risograph-print
+  name: Risograph print
+  prompt: risograph print with grainy overlapping spot inks, limited fluorescent pink, blue and yellow palette, slight misregistration, playful zine mood
+  group_ok: true
+- id: school-anime
+  name: School-life anime
+  prompt: bright Japanese school-life anime, clean linework, soft cel shading, clear blue skies, fresh pastel colors, cheerful youthful mood
+  group_ok: true
+- id: shin-hanga
+  name: Shin-hanga woodblock
+  prompt: Japanese shin-hanga woodblock print of the 1920s and 1930s, soft gradated color, misty atmosphere, quiet seasonal landscape, tranquil mood
+  group_ok: true
+- id: solarpunk-art
+  name: Solarpunk illustration
+  prompt: bright optimistic solarpunk illustration, buildings and vehicles overgrown with plants, solar panels, fresh greens and sunny gold, hopeful airy mood
+  group_ok: true
+- id: stained-glass
+  name: Stained glass
+  prompt: stained-glass window of jewel-toned glass pieces, dark leaded outlines, light glowing through, rich saturated colors, luminous sacred mood
+  group_ok: true
+- id: sunday-comic
+  name: Sunday funnies comic
+  prompt: classic newspaper Sunday funnies comic, bold ink outlines, flat bright print colors with halftone dots, expressive cartoon style, light humor
+  group_ok: true
+- id: tarot-print
+  name: Tarot card print
+  prompt: old tarot deck print, woodcut-like linework, flat muted hand-colored inks, ornate borders, solemn symbolic mood on aged cream paper
+  group_ok: true
+- id: tonalist-oil
+  name: Tonalist oil landscape
+  prompt: American tonalist oil landscape in the manner of Whistler and Inness, soft silvery mist, restrained greys and greens, luminous quiet light, hushed mood
+  group_ok: true
+- id: travel-sketchbook
+  name: Travel sketchbook
+  prompt: urban sketcher's travel journal in loose ink line and watercolour on a sketchbook page, quick wash colors, white paper showing, lively casual mood
+  group_ok: true
+- id: verne-engraving
+  name: Hand-tinted engraving
+  prompt: hand-tinted steel engraving from an 1870 Jules Verne novel, fine crosshatching, soft tinted washes of teal and ochre, adventurous period mood
+  group_ok: true
+- id: watercolor-ink
+  name: Watercolour and ink
+  prompt: loose luminous watercolour with fine ink lines, soft blended washes, white paper glow, gentle airy palette, tender calm mood
+  group_ok: true
+- id: world-princess-mixed-media
+  name: World folk-art mix
+  prompt: sampler of traditional folk and court art from around the world, each in its own medium, rich ornate patterns, jewel colors, storybook mood
+  group_ok: true
+- id: yamato-e
+  name: Yamato-e handscroll
+  prompt: Heian-era yamato-e handscroll painting, mineral pigments on paper, gold mist bands, flat bird's-eye rooms, delicate lines, elegant courtly mood
+  group_ok: true
+- id: 70s-portrait
+  name: 1970s film slide
+  prompt: faded 1970s colour film photograph like an old family slide, warm orange-yellow cast, soft grain, slightly muted contrast, gentle vignette, nostalgic snapshot mood
+  group_ok: false
+- id: art-deco-poster
+  name: Art Deco poster
+  prompt: 1920s Art Deco poster illustration, bold geometric shapes, symmetrical stylized composition, gold and deep jewel tones, sleek lines, glamorous theatrical mood
+  group_ok: true
+- id: autumn-gouache-pencil
+  name: Autumn gouache and pencil
+  prompt: warm autumn picture-book look in soft gouache with coloured-pencil texture, golden orange and brown palette, cozy gentle shading, friendly rounded shapes
+  group_ok: true
+- id: baocap-poster-gouache
+  name: Vietnamese propaganda poster
+  prompt: hand-painted gouache poster in the manner of Vietnamese state propaganda posters of the 1970s and 80s, flat bold color areas, strong red accents, heroic simple shapes
+  group_ok: true
+- id: bollywood-poster
+  name: Bollywood film poster
+  prompt: hand-painted 1970s Bollywood film poster, saturated glowing colors, dramatic romantic lighting, heightened expressive faces, ornate decorative flourishes, musical-melodrama mood
+  group_ok: true
+- id: chigiri-e
+  name: Torn-paper chigiri-e
+  prompt: Japanese chigiri-e collage built from hand-torn washi papers layered over one another, soft fibrous feathered edges, muted natural colors, calm quiet mood
+  group_ok: true
+- id: claymation
+  name: Claymation
+  prompt: stop-motion modelling clay with visible thumbprints and seams, soft rounded handmade shapes, bright saturated colors, warm studio light, charming tactile feel
+  group_ok: true
+- id: coloring-book
+  name: Coloring-book line art
+  prompt: printable children's coloring-book page, clean black outlines on white, no shading or fill, simple friendly shapes, generous open areas to color in
+  group_ok: true
+- id: conan-anime
+  name: Detective anime
+  prompt: Japanese detective anime look in color, clean sharp line art, flat cel shading, bright saturated palette, expressive faces, light mystery mood
+  group_ok: true
+- id: crochet
+  name: Crocheted yarn world
+  prompt: everything made of knitted and crocheted yarn, visible stitches, soft fuzzy wool texture, rich warm colors, cozy handmade toy look, shallow depth of field
+  group_ok: true
+- id: decades-photo
+  name: Period photographs
+  prompt: realistic period photographs imitating each decade of the last century, authentic film stock, era clothing and studio lighting, grain, fading and tonal character of each era
+  group_ok: false
+- id: dream-heist-cinema
+  name: Blockbuster film still
+  prompt: large-format cinematic film still with practical-effect realism, moody high-contrast lighting, teal and amber grading, epic scale, mind-bending surreal architecture, awe
+  group_ok: false
+- id: faded-80s-family-album
+  name: Faded 1980s album photo
+  prompt: aged 1980s family album snapshots, faded warm colors, yellowed whites, soft focus, grain, small scratches and fingermarks, nostalgic found-photo feel
+  group_ok: false
+- id: festival-linocut
+  name: Festival linocut print
+  prompt: festival-poster linocut print, bold carved black lines, a few flat ink colors, rough hand-printed texture, folk-art decoration, joyful energetic mood
+  group_ok: true
+- id: flat-vector-ornaments
+  name: Flat vector ornaments
+  prompt: flat solid-colour vector shapes in a small earthy palette of green, red, brown, gilt and cream, no gradients or texture, clean closed curves, friendly rounded forms
+  group_ok: true
+- id: future-eras
+  name: Future-era photographs
+  prompt: realistic photographs imagining one person across life stages, natural light, true skin and fabrics, lifelike detail, each era shown through its own clothes and setting
+  group_ok: false
+- id: golden-chiaroscuro-photo
+  name: Golden-hour chiaroscuro
+  prompt: golden-hour portrait photograph lit by warm low sun, deep chiaroscuro shadows, glowing rim light, rich amber tones, intimate soft-focus background
+  group_ok: false
+- id: hammershoi-interior
+  name: Hammershøi quiet interior
+  prompt: oil painting of a quiet empty room in the manner of Vilhelm Hammershøi, soft diffuse window light, thin muted paint, grey and soft earth tones, hushed patient mood
+  group_ok: true
+- id: illuminated-manuscript
+  name: Illuminated manuscript
+  prompt: medieval illuminated manuscript painting, gold leaf accents, rich mineral pigments, ornate borders and flat decorative perspective, parchment tone, storybook charm
+  group_ok: true
+- id: katazome-stencil
+  name: Katazome stencil dye
+  prompt: Japanese katazome rice-paste-resist stencil dyeing on cloth or paper, flat indigo and earth colors, crisp patterned shapes, fine white resist lines, calm graphic mood
+  group_ok: true
+- id: lego
+  name: Plastic toy bricks
+  prompt: built entirely of glossy plastic toy bricks with minifigure-style characters, studs visible, saturated colors, shot like a toy photograph with shallow depth of field
+  group_ok: true
+- id: lookbook
+  name: Fashion lookbook
+  prompt: clean fashion lookbook photography, studio shots like catalog products from varied camera angles, plain backdrop, even soft light, crisp modern styling
+  group_ok: false
+- id: manga
+  name: Colour manga
+  prompt: Japanese manga drawn in colour, crisp ink linework, screentone-style shading, large expressive eyes, dynamic panel energy, bright clean palette
+  group_ok: true
+- id: modern-editorial-glam
+  name: Glossy editorial photo
+  prompt: glossy fashion-magazine photo shoot, polished studio lighting, sharp contemporary styling, rich saturated color, high-end retouched finish, glamorous poised mood
+  group_ok: false
+- id: needle-felt
+  name: Needle-felted wool
+  prompt: whole world made of needle-felted wool, fuzzy fibers, soft rounded handmade forms, muted warm colors, tiny props, cozy macro-photo lighting
+  group_ok: true
+- id: nordic-gouache
+  name: Nordic gouache picture book
+  prompt: Scandinavian picture-book illustration in gouache, flat matte color areas, cool blues and forest greens with warm accents, simple rounded shapes, wild-nature mood
+  group_ok: true
+- id: overwatch-art
+  name: Overwatch animated look
+  prompt: in the style of Blizzard's Overwatch animated shorts, polished 3D-animated film rendering, warm cinematic light, expressive faces, clean heroic shapes
+  group_ok: true
+- id: parade-balloon-gif
+  name: Parade balloon float
+  prompt: giant glossy inflatable helium parade balloon, smooth slightly translucent vinyl skin with soft highlights, tethered above a big city street, bright festive color, cheerful whimsical mood
+  group_ok: true
+- id: peanuts-tv-special
+  name: Peanuts TV special
+  prompt: in the drawing style of Charles Schulz's Peanuts as animated in the 1970s TV specials, simple round-headed characters, thin wobbly lines, flat pastel colors, plain backgrounds
+  group_ok: true
+- id: photo-real-loop
+  name: Phone-video frames
+  prompt: realistic phone-video frames from a fixed tripod, natural indoor light, true skin and fabrics, slight camera softness, everyday home look, candid and unposed
+  group_ok: false
+- id: realistic-portrait
+  name: Warm realistic portrait
+  prompt: realistic portrait like fine portrait photography with painterly warmth, natural light, true skin and real fabrics, soft focus background, never cartoon or doll-like
+  group_ok: false
+- id: rey-picturebook-40s
+  name: 1940s picture book
+  prompt: in the look of H. A. Rey's original 1940s Curious George picture books, simple bold gouache shapes, flat bright primaries, light ink outlines, plain backgrounds, playful mood
+  group_ok: true
+- id: rockwell-magazine-oil
+  name: Rockwell-style magazine oil
+  prompt: mid-century American magazine cover painted in oil in the manner of Norman Rockwell, warm realistic figures, expressive gestures, gentle humor, clear storytelling, nostalgic palette
+  group_ok: true
+- id: schulz-peanuts-special-70s
+  name: 1970s Peanuts cel
+  prompt: in the style of Charles Schulz's Peanuts as animated in the 1970s TV specials, flat cels over soft watercolour-wash backgrounds, thin simple lines, muted pastel colors
+  group_ok: true
+- id: shodo-portrait
+  name: Shodo calligraphy and sumi-e
+  prompt: Japanese shodo calligraphy and sumi-e ink painting on washi paper, bold black brush strokes, kanji, red seal stamps, soft ink washes, much empty space
+  group_ok: true
+- id: solarpunk-watercolor
+  name: Solarpunk watercolor
+  prompt: bright solarpunk watercolor illustration, lush greenery woven with solar panels and gentle machines, translucent washes, sunny optimistic colors, playful whimsical mood
+  group_ok: true
+- id: sticker-pack
+  name: Chat sticker
+  prompt: die-cut chat-app sticker illustration, clean bold outlines, bright simple colors, white sticker border, expressive cartoon rendering, isolated on plain background
+  group_ok: true
+- id: sunlit-shadow-photo
+  name: Hard-sun shadow photo
+  prompt: realistic photograph lit by hard direct sun, crisp high-contrast shadows on pavement and walls, bright saturated daylight color, clean everyday realism with playful shadows
+  group_ok: false
+- id: trading-card
+  name: Fantasy trading card
+  prompt: collectible fantasy trading card, foil-shimmer border, framed painted illustration, ornate frame details, rich glowing colors, game-card layout feel
+  group_ok: true
+- id: tv-xianxia-2000s
+  name: 2000s xianxia TV still
+  prompt: 2000s Chinese fantasy television video still, soft-focus glow, richly saturated silk costumes, painted studio backdrops, early computer-effect sparkle, smoke-machine fog, warm broadcast grain
+  group_ok: false
+- id: viet-traditional-arts
+  name: Vietnamese folk arts
+  prompt: Vietnamese traditional art looks such as Dong Ho woodblock, lacquer and silk painting, natural pigments, bold flat color, lantern-lit warm glow, festive folk mood
+  group_ok: true
+- id: watercolour-ink-monkey-own
+  name: Watercolour and ink picture book
+  prompt: warm watercolour-and-ink picture-book look, loose pen outlines, soft translucent washes, gentle colors, friendly rounded characters, cozy storybook mood
+  group_ok: true
+- id: wpa-poster
+  name: WPA park poster
+  prompt: 1930s WPA national-park screen-print poster, flat bold color blocks, simplified grand landscapes, limited warm palette, strong graphic composition, vintage paper texture
+  group_ok: true
+- id: zen-master-anime
+  name: 1990s slice-of-life anime
+  prompt: gentle 1990s hand-drawn anime cel look, clean thin line art, flat cel shading with one soft shadow tone, pastel watercolour backgrounds with paper grain, quiet calm mood
+  group_ok: true
+- id: ajanta-fresco
+  name: Ajanta cave fresco
+  prompt: ancient Indian cave mural in the manner of the Ajanta frescoes, earth pigments on lime plaster, soft ochre, terre verte and malachite green, warm gentle mood
+  group_ok: true
+- id: pastel-catalogue-photo
+  name: Pastel catalogue photo
+  prompt: soft daylight studio photograph on seamless pastel paper backdrops, real fabric, skin and toy textures, bright catalogue feel, joyful and clean
+  group_ok: false
+- id: biedermeier-storybook
+  name: Biedermeier storybook
+  prompt: 19th-century German Biedermeier storybook illustration, fine linework with soft warm colour, cosy domestic detail, gentle humour, aged paper tones
+  group_ok: true
+- id: campaign-cartoon
+  name: 1950s campaign cartoon
+  prompt: 1950s American editorial cartoon and campaign poster, bold inked outlines, flat limited colours, exaggerated expressions, playful retro print feel
+  group_ok: true
+- id: child-drawing
+  name: Child's crayon drawing
+  prompt: genuine child's drawing with wax crayons and coloured pencils on paper, wobbly lines, bright uneven colouring, naive proportions, proud kitchen-table charm
+  group_ok: true
+- id: claymation-stopmotion
+  name: Claymation stop-motion
+  prompt: stop-motion claymation look, sculpted clay figures and props with fingerprint texture, soft studio lighting, warm saturated colours, handmade charm
+  group_ok: true
+- id: colour-mezzotint
+  name: Colour mezzotint
+  prompt: 18th-century colour mezzotint printed in several inks from one copper plate, soft velvety tones, rose gold, blue grey and pale sage, misty calm light
+  group_ok: true
+- id: costume-photo
+  name: Handmade costume photo
+  prompt: soft realistic fine-art photography of handknitted, felted and sewn costumes, visible stitching, dappled natural light, shallow depth of field, warm storybook grade
+  group_ok: false
+- id: cut-paper-anim
+  name: Cut-paper animation
+  prompt: cut-paper animation look, flat layered paper shapes with slight edge shadows, simple bold forms, bright limited palette, playful handmade movement
+  group_ok: true
+- id: detail-story
+  name: Close-up detail photos
+  prompt: tight macro-style close-up photographs seen as through a magnifying glass, shallow depth of field, real textures of knit, glass and wood, soft window light, warm morning colours
+  group_ok: false
+- id: dulac-jewel-watercolour
+  name: Dulac jewel watercolour
+  prompt: jewel-toned watercolour fairy-tale illustration in the manner of Edmund Dulac, rich deep blues, golds and crimsons, delicate detail, ornate storybook elegance
+  group_ok: true
+- id: fairy-light-wire
+  name: Fairy-light wire portrait
+  prompt: outline drawn in light with thin copper wire strung with tiny warm-white bulbs, glowing line against deep darkness, round bokeh and soft lens glow, quiet warmth
+  group_ok: true
+- id: film-still
+  name: Cinematic film still
+  prompt: cinematic film still, dramatic lighting, rich colour grade, shallow depth of field and fine grain, polished big-budget thriller look
+  group_ok: false
+- id: folk-gouache
+  name: European folk gouache
+  prompt: European folk-art gouache painting, flat opaque colour, decorative patterns, simple stylised shapes, bright festive palette, warm hand-painted charm
+  group_ok: true
+- id: german-woodcut
+  name: Hand-coloured German woodcut
+  prompt: hand-coloured German woodcut like an old broadsheet, bold carved black outlines, cross-hatched gouge marks, flat muted red, ochre, forest green and blue, slightly off-register
+  group_ok: true
+- id: gongbi
+  name: Gongbi silk painting
+  prompt: Chinese gongbi painting on silk, fine precise brush outlines, delicate layered mineral colour, graceful figures, drifting clouds, bright gentle mood
+  group_ok: true
+- id: hashira-e
+  name: Hashira-e woodblock print
+  prompt: tall narrow ukiyo-e pillar print in the delicate pale colours of Suzuki Harunobu, soft woodblock tones, unprinted paper, quiet airy composition
+  group_ok: true
+- id: indochine-oil-court
+  name: Indochine court oil
+  prompt: academic oil painting of the 1930s Indochina Fine Arts school, silky soft modelling, no hard outlines, warm umber shadows, jewel silk colours, museum court portrait light
+  group_ok: true
+- id: iwasaki-watercolor
+  name: Iwasaki picture-book watercolour
+  prompt: soft wet watercolour in the manner of Chihiro Iwasaki, blooming pastel washes, much bare white paper, delicate fine-lined faces, airy and tender
+  group_ok: true
+- id: kay-nielsen
+  name: Kay Nielsen art deco
+  prompt: art deco fairy-tale illustration in the manner of Kay Nielsen, elegant stylised figures, flowing decorative lines, rich dark blues and golds, wondrous mood
+  group_ok: true
+- id: lianhuanhua-pen
+  name: Lianhuanhua pen booklet
+  prompt: Chinese lianhuanhua picture-booklet drawing, fine black pen and ink with careful cross-hatching, clean contours, black ink alone on yellowed aged paper with print grain
+  group_ok: true
+- id: luminist-oil
+  name: Luminist landscape oil
+  prompt: 19th-century American luminist oil painting in the manner of Fitz Henry Lane and Martin Johnson Heade, glassy still water, glowing pale gold and rose sky, quiet mist
+  group_ok: true
+- id: material-portraits
+  name: Handmade material portraits
+  prompt: real photographs of portraits made by hand from sand, tile, hedge or stone, true grain and scale, small hand-work imperfections, warm daylight, rich colour
+  group_ok: false
+- id: mongol-zurag
+  name: Mongol zurag painting
+  prompt: traditional Mongol zurag painting, flat bright mineral colours, fine decorative detail, steppe landscapes, festive warm palette, clear outlines
+  group_ok: true
+- id: newsprint-cutouts
+  name: Newsprint cutout collage
+  prompt: mixed-media collage, hand-painted warm Studio Ghibli-like scene with black-and-white halftone newspaper cutouts glued flat on top, one coloured figure as the bright heart
+  group_ok: true
+- id: nordic-picture-book
+  name: Nordic picture book
+  prompt: Scandinavian mid-century children's book illustration, flat textured shapes, limited warm palette, simple charming forms, cosy and gently funny
+  group_ok: true
+- id: painted-film-frame
+  name: Painted samurai film frame
+  prompt: gouache and airbrush like a hand-painted 1950s samurai film lobby card, raking side light, drifting mist, deep blacks, ink-blue shadows, dawn-gold highlights, film grain
+  group_ok: true
+- id: pareidolia-nature
+  name: Nature pareidolia photo
+  prompt: documentary-quality landscape and macro nature photographs in natural light, bark, rock, cloud, moss and ice textures, subtle shapes that read as faces
+  group_ok: false
+- id: pencil-sketch
+  name: Sketchbook pencil drawing
+  prompt: portrait artist's sketchbook pages in graphite pencil, quick confident lines, soft shading, bare paper, loose and inspiring
+  group_ok: true
+- id: pixel-art
+  name: 16-bit pixel art
+  prompt: early-1990s 16-bit console game pixel art, crisp pixels, limited bright palette, charming sprites, colourful platformer screens
+  group_ok: true
+- id: pressed-flower-collage
+  name: Pressed-flower oshibana
+  prompt: oshibana picture of real dried flowers and leaves arranged flat on cream handmade paper with visible fibres, soft pastel colours, calm airy composition
+  group_ok: true
+- id: renaissance-oil
+  name: Renaissance sky oil
+  prompt: Renaissance oil painting in the manner of Raphael and Correggio, soft cherub-filled clouds, glowing sky ceilings, warm golden light, gentle modelling
+  group_ok: true
+- id: richter-picturebook
+  name: Richter picture book
+  prompt: 19th-century German picture book in the manner of Ludwig Richter and Wilhelm Busch, fine ink line with soft watercolour, warm paper tones, gentle humour
+  group_ok: true
+- id: rubberhose-gothic
+  name: Rubber-hose gothic cartoon
+  prompt: 1930s Fleischer-style rubber-hose cartoon on a gothic set, bendy tube limbs, inky blacks, grainy black-and-white shading with glowing acid green and purple, spooky-silly
+  group_ok: true
+- id: scifi-paperback-airbrush
+  name: Sci-fi paperback airbrush
+  prompt: vintage science-fiction paperback cover airbrush painting, glowing enormous machines and vistas, smooth gradients, vivid colour, awe-struck wonder
+  group_ok: true
+- id: showa-anime
+  name: Showa-era anime
+  prompt: 1980s Showa-era Japanese anime film look, hand-painted cel animation, soft warm backgrounds, slightly faded colour, gentle comedic character art
+  group_ok: true
+- id: son-mai-lacquer
+  name: Son mai lacquer
+  prompt: Vietnamese son mai lacquer painting, deep black and cinnabar-red ground, gold and silver leaf sanded back, crushed eggshell whites, polished mirror depth
+  group_ok: true
+- id: street-photo
+  name: Street photography
+  prompt: real street photographs with each frame's own lens, shutter and grain, neon, rain and city light, poetic candid feel, tender and alive
+  group_ok: false
+- id: surreal-oil
+  name: Surrealist oil
+  prompt: tender surrealist oil painting in the manner of Salvador Dali and Rene Magritte, smooth blended glazes, hard clear light, long soft shadows, wide empty skies, impossible objects
+  group_ok: true
+- id: telephoto-surveillance-bw
+  name: Telephoto surveillance film
+  prompt: grainy black-and-white 35mm contact sheet in the look of 1970s long-lens espionage photography, deep blacks, blown highlights, flattened depth, obstructed views
+  group_ok: false
+- id: tranh-lua-silk
+  name: Tranh lua silk
+  prompt: Vietnamese silk painting of the 1930s in the manner of Nguyen Phan Chanh, thin ink and colour washes on cream silk, pale jade, rose and indigo, bare silk, calm
+  group_ok: true
+- id: tvb-wuxia-80s-subtitled
+  name: 1980s HK wuxia TV
+  prompt: still from a 1980s Hong Kong wuxia television serial, warm studio lighting, soft grain, faded print colour, painted backdrops, flowing silk costumes
+  group_ok: true
+- id: vn-kids-comic-2000s
+  name: Vietnamese kids' comic
+  prompt: bright Vietnamese children's comic of the 2000s, clean bold outlines, flat cheerful colours, exaggerated expressions, silly warm humour
+  group_ok: true
+- id: watercolour-ink-monkey-plain
+  name: Watercolour and ink picture book
+  prompt: warm watercolour-and-ink picture-book illustration, loose ink outlines, soft colour washes, gentle humour, classic storybook charm
+  group_ok: true
+- id: wuxia-manhua
+  name: Wuxia manhua
+  prompt: full-colour Hong Kong wuxia manhua, painted comic art with dramatic ink lines, glowing qi light, swirling mist and leaves, rich epic colour
+  group_ok: true
+- id: zenga-ink
+  name: Zenga ink painting
+  prompt: Edo-period zenga ink painting in the manner of Hakuin Ekaku and Sengai Gibon, loose fast sumi brushwork, grey ink wash, bold calligraphic outlines, empty cream paper, small red seal
+  group_ok: true
+- id: animation-cels
+  name: Hand-drawn animation cels
+  prompt: hand-drawn animated film frames on clean cel-style line work, flat soft colors, gentle shading, consecutive key drawings with warm cream backgrounds, cheerful mood
+  group_ok: true
+- id: art-nouveau
+  name: Art Nouveau poster
+  prompt: in the manner of Alphonse Mucha's Art Nouveau posters, flowing outlines, ornamental floral borders, soft muted pastel palette with gold accents, decorative tall compositions
+  group_ok: true
+- id: low-eye-level-photo
+  name: Wide-angle eye-level photo
+  prompt: real wide-angle photograph from a very low eye-level position, huge sharp faces looming in the foreground, big warm close world, natural soft light, tender mood
+  group_ok: false
+- id: binocular-view
+  name: Binocular vignette photo
+  prompt: real photograph seen through binoculars, black double-circle vignette with soft edges, hazy distance, natural outdoor light, slightly shaky documentary feel, funny voyeur mood
+  group_ok: false
+- id: cave-painting
+  name: Cave painting
+  prompt: photographs of primitive prehistoric rock art, simple painted, pecked and scratched figures in ochre, charcoal and red earth pigments on rough stone, playful primal mood
+  group_ok: true
+- id: cinematic-grade
+  name: Anamorphic film frame
+  prompt: real photograph shot as an anamorphic widescreen film frame, thin black letterbox bars, teal and orange grade, lens flares, shallow depth of field, cinematic golden light
+  group_ok: false
+- id: claymation-world
+  name: Claymation stop-motion
+  prompt: claymation stop-motion look, hand-sculpted plasticine figures with fingerprint texture, miniature sets, tiny props, warm studio lighting, bright playful colors
+  group_ok: true
+- id: coloured-pencil-anim
+  name: Coloured-pencil animation
+  prompt: animation frames drawn in coloured pencil, visible hatching and paper grain, soft wobbling outlines, gentle muted colors, cozy handmade mood
+  group_ok: true
+- id: crayon-line-anim
+  name: Crayon line animation
+  prompt: animation frames in waxy crayon and loose wobbling line drawing, rough paper texture, bright childlike colors, bouncy playful mood
+  group_ok: true
+- id: cutout-cartoon
+  name: Paper cutout cartoon
+  prompt: South Park-style construction-paper cutout cartoon, flat simple shapes, thick black outlines, bright primary colors, snowy small-town backdrops, deadpan comic mood
+  group_ok: true
+- id: disposable-flash-90s
+  name: 1990s disposable flash
+  prompt: real snapshot from a 1990s single-use film camera, harsh direct flash, red-tinted shadows, film grain, slightly tilted unposed framing, nostalgic imperfect mood
+  group_ok: false
+- id: eastmancolor-1950s
+  name: 1950s Eastmancolor film
+  prompt: real film still in 1950s Eastmancolor, soft grain, slightly faded grey-blue light, muted world with one or two saturated accent colors, gentle poetic mood
+  group_ok: false
+- id: fantasy-newspaper
+  name: Vintage newspaper front page
+  prompt: whimsical vintage newspaper front page, bold serif masthead and headline, aged cream newsprint, large engraved halftone illustration, columns of small type, dry humorous mood
+  group_ok: true
+- id: finnish-screenprint-60s
+  name: 1960s Finnish screenprint
+  prompt: 1960s Finnish hand screen-printed cotton textile, bold flat shapes in a few overlapping inks, slight misregistration, natural grasses and trees, earthy calm palette
+  group_ok: true
+- id: fortnite-art
+  name: Fortnite cartoon 3D
+  prompt: Fortnite's bright chunky cartoon 3D look, smooth glossy stylized characters, saturated colors, sunny island scenery, energetic playful mood
+  group_ok: true
+- id: globe-interior
+  name: Snow globe macro
+  prompt: macro miniature photography inside a glass snow globe, tiny cottage and pines, falling snow flakes, shallow depth of field, warm glowing windows, magical winter mood
+  group_ok: false
+- id: gongbi-yamato
+  name: Gongbi silk painting
+  prompt: Chinese gongbi painting on silk, fine ink outlines, delicate layered mineral colors, soft gold touches, peach blossoms and clouds, serene refined mood
+  group_ok: true
+- id: hiphop-90s
+  name: 90s hip-hop poster
+  prompt: painted 90s hip-hop album cover and street-photo poster, rich saturated colors, gold chains, bucket hats, spotlights and turntables, bold energetic mood
+  group_ok: true
+- id: ink-scroll
+  name: Ink handscroll
+  prompt: Chinese ink-and-color handscroll painting, brush-drawn mountains and mist, fine line figures, soft mineral colors on aged paper, long flowing composition
+  group_ok: true
+- id: john-bauer
+  name: John Bauer folklore
+  prompt: in the look of John Bauer's Scandinavian folklore illustrations, dark misty pine forests, muted earthy palette with warm glowing lights, gentle trolls and tomte, mysterious fairy-tale mood
+  group_ok: true
+- id: kungfu-poster
+  name: 1970s kung fu poster
+  prompt: hand-painted 1970s Hong Kong kung fu film poster art, dramatic painted figures, bold reds and golds, misty mountains, dynamic upward composition, triumphant mood
+  group_ok: true
+- id: light-wire-scenes
+  name: Light sculpture night
+  prompt: large outdoor light sculptures photographed at night, bent wire outlines with glowing string lights and tinsel volume, deep dark surroundings, warm festive glow
+  group_ok: false
+- id: mgm-chase-cartoon-40s
+  name: 1940s chase cartoon
+  prompt: 1940s theatrical cat-and-mouse cartoon in the manner of Hanna and Barbera, lush painted gouache backgrounds, squash-and-stretch animation, bold outlines, bright slapstick mood
+  group_ok: true
+- id: naruto-anime
+  name: Naruto anime
+  prompt: in the style of the Naruto anime, bold clean outlines, flat cel shading, vivid saturated colors, speed lines and dynamic poses, village scenery, energetic playful mood
+  group_ok: true
+- id: nianhua
+  name: Nianhua woodblock prints
+  prompt: Chinese New Year woodblock prints in the Yangliuqing and Taohuawu manner, bold carved outlines, hand-colored festive reds, greens and yellows, chubby auspicious figures
+  group_ok: true
+- id: odd-reflections-photo
+  name: Reflection photography
+  prompt: real photograph in natural light and honest color, subjects seen in mirrors, windows, puddles and spoons, quiet everyday winter mood, crisp detail
+  group_ok: false
+- id: painter-styles
+  name: Great painters mix
+  prompt: oil painting in the brushwork, palette and light of different great painters, from impressionist dabs to bold post-impressionist color, painterly textured canvas, tender mood
+  group_ok: true
+- id: pastel-low-poly
+  name: Pastel low-poly 3D
+  prompt: soft pastel 3D render in a low-poly style, faceted simple shapes, smooth gradients, gentle studio light, calm empty stage-set room, quiet mood
+  group_ok: true
+- id: photo-angles
+  name: Photographer perspectives
+  prompt: real-looking photographs from varied camera perspectives in the manner of different famous photographers, misty blue evening light, dramatic composition, moody atmospheric mood
+  group_ok: false
+- id: pointillist-oil
+  name: Pointillist oil
+  prompt: neo-impressionist pointillist oil painting in the manner of Seurat and Signac, tiny dabs of pure color, sunny summer water and willows, luminous calm mood
+  group_ok: true
+- id: product-ad
+  name: Glossy ad photo
+  prompt: glossy commercial advertisement photograph, soft studio light, crisp detail, polished elegant composition, selective color against black and white, premium mood
+  group_ok: false
+- id: retreat-brochure
+  name: 1980s airbrush brochure
+  prompt: 1980s resort-brochure illustration in soft airbrush, smooth gradients, peach and turquoise sunsets, long palm shadows, soft focus glow, pastel tones, relaxed vacation mood
+  group_ok: true
+- id: rinpa-gold
+  name: Rinpa gold leaf
+  prompt: Rinpa-school painting on beaten gold leaf in the manner of Ogata Korin, flat gold fields, stylized waves, curling irises, patterned pines, mineral green and blue pigments
+  group_ok: true
+- id: samurai-jack-anim
+  name: Samurai Jack animation
+  prompt: in the style of the Samurai Jack animated series, flat geometric shapes, bold limited palettes, wide cinematic panoramas, long silences, single small figure, cool epic mood
+  group_ok: true
+- id: seal-print
+  name: Coloured seal print
+  prompt: coloured stamp print carved from a stone seal, pressed in several inks onto paper, bold simple shapes, slightly uneven ink texture, warm cheerful palette
+  group_ok: true
+- id: showa-tokusatsu
+  name: Showa tokusatsu film
+  prompt: 1960s Japanese tokusatsu monster TV show film stills, miniature model city sets, rubber-suit creatures, slightly faded color, practical studio lighting, playful mood
+  group_ok: true
+- id: song-landscape
+  name: Song shan shui landscape
+  prompt: Song-dynasty shan shui landscape in the manner of Fan Kuan and Ma Yuan, towering ink mountains, mist bands, pines and waterfalls, aged silk in brown, pale green and grey-gold
+  group_ok: true
+- id: sumi-e
+  name: Sumi-e ink painting
+  prompt: Japanese sumi-e ink painting, expressive black brush strokes, soft gray washes, plenty of empty paper, mountain, tree and ocean motifs, quiet poetic mood
+  group_ok: true
+- id: surveillance-feeds
+  name: Surveillance footage
+  prompt: real security and monitoring camera footage, grainy low-resolution frames, fisheye and high-angle views, timestamp-free screens, cold desaturated color, deadpan mood
+  group_ok: false
+- id: tenggren-golden-book
+  name: Tenggren Golden Book
+  prompt: in the look of Gustaf Tenggren's 1940s Little Golden Books, rich gouache painting, warm jewel colors, storybook castles, soft rounded figures, cozy fairy-tale mood
+  group_ok: true
+- id: travel-photo
+  name: Travel photography
+  prompt: real travel photograph, natural daylight, vivid true colors, candid framing, rich street and landscape detail, warm adventurous mood
+  group_ok: false
+- id: ubbelohde-grimm-jugendstil
+  name: Ubbelohde Jugendstil
+  prompt: Otto Ubbelohde's Grimm fairy-tale illustration look, fine pen-and-ink line work with flat Jugendstil color, rural forests and cottages, muted greens and browns
+  group_ok: true
+- id: vocaloid-concert
+  name: Hologram concert
+  prompt: glossy Japanese hologram concert look, glowing cyan holographic figure on a transparent stage screen, neon beams, glowsticks, dark dome, electric festive mood
+  group_ok: true
+- id: wes-anderson
+  name: Symmetrical pastel look
+  prompt: symmetrical centered flat-on compositions, pastel palette of pink, mint and powder blue, deadpan staging, tidy retro props, dollhouse-like precision, whimsical dry mood
+  group_ok: true
+- id: xieyi-ink
+  name: Xieyi freehand ink
+  prompt: Chinese xieyi freehand ink and color painting in the manner of Qi Baishi, loose bold brush strokes, vivid red and black accents, playful animals, witty mood
+  group_ok: true

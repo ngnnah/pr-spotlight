@@ -1,0 +1,490 @@
+# Technology terms mapped to pop-culture and history picture ideas. Add your own stack's terms.
+# match: lowercase substrings to look for in changed file paths, diff text, PR title/body.
+# refs: picture ideas (kind, work-safe). lesson_hint: one line for the caption writer.
+# The Airflow entry is the generic fallback: put it last when ranking matches.
+
+- term: DuckDB
+  match:
+  - duckdb
+  refs:
+  - The Godfather, cast as ducks in a pond-side family meeting
+  - a duck pond library where every duck carries a parquet tile
+  - Donald Duck as a lab chemist weighing tiny tables on a scale
+  - a duck-shaped steam engine pulling a train of data columns
+  lesson_hint: in-process analytics; great for local files, mind memory on big joins and the version of the file format
+- term: dbt
+  match:
+  - dbt
+  refs:
+  - a Roman aqueduct where each arch is a model feeding the next
+  - Hogwarts potions class, each cauldron a model with a recipe card
+  - an assembly line in Charlie Chaplin's Modern Times, tidy and well labeled
+  - Lego bricks snapping into layers from staging to marts
+  lesson_hint: models are layered and tested; keep transforms small, named, and covered by tests
+- term: Redshift
+  match:
+  - redshift
+  refs:
+  - a red-shifted star field in a Hubble-style space poster
+  - Apollo 13 mission control watching a red gauge climb
+  - a Tokyo bullet train in sunset red speeding past a warehouse of tables
+  lesson_hint: columnar warehouse; grants, schemas and sort/dist choices matter more than raw size
+- term: Athena
+  match:
+  - athena
+  refs:
+  - the goddess Athena with an owl reading a scroll of SQL
+  - the Parthenon as a library of parquet columns
+  - a Greek vase painting of heroes querying the lake
+  lesson_hint: serverless SQL over files in S3; partition layout and workgroup settings drive cost and speed
+- term: Glue catalog
+  match:
+  - glue
+  - catalog
+  refs:
+  - the Library of Alexandria with a very tidy card catalog
+  - a Dewey decimal card drawer in a quiet reading room
+  - Akira Kurosawa's Seven Samurai registering villagers in a ledger
+  lesson_hint: the catalog is the map of the lake; locations, partitions and table names must stay in sync
+- term: S3
+  match:
+  - s3://
+  - s3_
+  - /s3/
+  - boto3
+  refs:
+  - Scrooge McDuck's money bin, filled with neatly stacked parquet files
+  - the Great Pyramid of Giza built from labeled storage boxes
+  - the warehouse at the end of Raiders of the Lost Ark, but fully indexed
+  - Noah's Ark loading datasets two by two
+  lesson_hint: object storage is cheap and durable; prefixes are the design, and listing is slower than you think
+- term: Postgres
+  match:
+  - postgres
+  - psql
+  - pg_
+  refs:
+  - an elephant in a Wes Anderson hotel lobby, perfectly symmetrical
+  - Babar the elephant as the stately archivist of a grand library
+  - Hannibal's war elephants crossing the Alps with a database in a howdah
+  - a Studio Ghibli elephant spirit keeping very careful ledgers
+  lesson_hint: the relational workhorse; transactions, locks and dry runs keep schema and data changes safe
+- term: PostGIS
+  match:
+  - postgis
+  - st_intersects
+  - st_contains
+  - st_buffer
+  - st_transform
+  refs:
+  - Magellan's navigators plotting a spatial index on a vellum map
+  - Indiana Jones tracing a red dotted line across a world map
+  - Lewis and Clark with a compass and a very sharp bounding box
+  lesson_hint: spatial functions and indexes; mind SRIDs, and use the index before the clever function
+- term: H3 hexagons
+  match:
+  - h3_
+  - h3-index
+  - h3 cell
+  - h3 resolution
+  - h3_aggregate
+  refs:
+  - the honeycomb city of bees from a Pixar-style animated film
+  - the hexagonal board of Settlers of Catan
+  - the Giant's Causeway basalt columns as a tidy hex grid
+  - a hex-grid wargame map in the style of Civilization
+  lesson_hint: hexagonal cells give uniform neighbors; choose resolution deliberately and aggregate by cell
+- term: GeoParquet / GeoArrow
+  match:
+  - geoparquet
+  - geoarrow
+  - parquet
+  refs:
+  - Hokusai's wave with every curl drawn as a tidy column
+  - a Japanese kintsugi bowl whose gold seams are geometry
+  - a mosaic floor in Pompeii assembled from tiny labeled tiles
+  - a Bauhaus poster of stacked colored columns
+  lesson_hint: columnar geometry is compact and fast; stream and slice conversions so memory stays flat
+- term: ECS / Fargate
+  match:
+  - ecsrun
+  - ecs_
+  - /ecs/
+  - fargate
+  refs:
+  - a Viking longship carrying one container per rower
+  - the Port of Rotterdam at dawn, cranes lifting containers onto ships
+  - Wall-E stacking cubes on a robot-run dock
+  - Ocean's Eleven crew each handed a sealed container job
+  lesson_hint: heavy work runs in its own container; size the machine to the job and keep images lean
+- term: EFS
+  match:
+  - housekeeping_efs
+  - efs_
+  - /efs/
+  - efs sweep
+  refs:
+  - a shared workshop floor in a Studio Ghibli bathhouse, swept every night
+  - the Great Library scribes sharing one big desk
+  - a communal bakery cleaning flour off a long table at closing time
+  lesson_hint: shared disk fills up quietly; sweep and clean up what a run leaves behind
+- term: Airflow assets
+  match:
+  - asset(
+  - outlets=
+  - inlets=
+  - assets
+  refs:
+  - a relay race at the Olympics, the baton an asset update
+  - the Olympic flame passing from torch to torch
+  - Pony Express riders handing a mochila between stations
+  lesson_hint: assets express what a task produces; trigger downstream work on data, not on the clock
+- term: Airflow sensors
+  match:
+  - sensor
+  - poke_interval
+  - deferrable
+  refs:
+  - a lighthouse keeper watching the horizon in a Hopper painting
+  - Hachiko waiting at Shibuya station for the right train
+  - a meerkat on sentry duty in an Attenborough documentary
+  lesson_hint: sensors wait for a condition; prefer deferrable mode or events over a worker that sits and polls
+- term: Dynamic task mapping
+  match:
+  - .expand(
+  - partial(
+  - map_index
+  refs:
+  - the Sorcerer's Apprentice brooms multiplying, now in disciplined rows
+  - a terracotta army where each soldier has a number
+  - Agent Smith replicating in The Matrix, each doing a tidy task
+  lesson_hint: one task definition, many instances; cap the fan-out with pools and keep each unit small
+- term: Terraform / infra
+  match:
+  - terraform
+  - .tf
+  - infra/
+  - helm
+  - kubernetes
+  - k8s
+  refs:
+  - Brunelleschi's blueprint for the dome of Florence
+  - an architect's drafting table in a Frank Lloyd Wright studio
+  - Noah's blueprints for the Ark, in careful cubits
+  - Lego instruction booklet for a skyscraper
+  lesson_hint: infrastructure as code; review the plan, change one thing at a time, and keep dev and prod parallel
+- term: Docker
+  match:
+  - docker
+  - dockerfile
+  - image build
+  refs:
+  - a whale carrying neat shipping containers, Moby-Dick but friendly
+  - a Japanese bento box, each compartment a sealed layer
+  - Russian nesting dolls, one image layer inside the next
+  lesson_hint: images are layers; pin versions so a rebuild never changes what ran yesterday
+- term: Python dependencies
+  match:
+  - requirements.txt
+  - pip install
+  - constraints file
+  - vuln
+  - vanta
+  - inspector
+  - advisory
+  - ghsa
+  refs:
+  - a medieval castle gatehouse checking each traveler's papers
+  - the Great Wall of China with watchtowers marked by version numbers
+  - Snow White's seven dwarfs inspecting each gem for flaws
+  lesson_hint: pin and audit; a security bump is a small change with a long list of things to re-verify
+- term: R-tree
+  match:
+  - r-tree
+  - rtree
+  - spatial index
+  refs:
+  - Russian nesting dolls of rectangles around a tiny map
+  - a family tree of Roman emperors drawn as nested boxes
+  - a treehouse city whose branches are bounding boxes, in the style of Miyazaki
+  - Mondrian painting built from nested rectangles
+  lesson_hint: a spatial index prunes by bounding box; know when it helps a join and when it hurts a build
+- term: Tile server
+  match:
+  - tileserver
+  - tile_server
+  - mbtiles
+  - z/x/y
+  refs:
+  - a medieval map-maker's workshop pinning square vellum tiles into an atlas
+  - Google Earth as a patchwork quilt stitched by grandmothers
+  - Super Mario Bros. level built from square tiles that scroll past
+  - a Roman mosaic being laid one tile at a time
+  lesson_hint: serve small pieces of the map on demand; version the tiles and keep the source reproducible
+- term: PMTiles
+  match:
+  - pmtiles
+  - tippecanoe
+  - protomaps
+  - tile_join
+  - create_tile
+  refs:
+  - an origami map unfolding from a single sheet
+  - a Japanese folding screen byobu painted with the whole country
+  - a pocket atlas in the hands of Phileas Fogg
+  lesson_hint: one file, many tiles, served by range request; tag versions so rollback is a copy
+- term: Bedrock LLM
+  match:
+  - bedrock
+  - llm_
+  - pydantic_ai
+  - pydantic-ai
+  - langfuse
+  refs:
+  - the Oracle of Delphi reading a printed invoice
+  - HAL 9000 politely checking a duplicate invoice, with a friendlier voice
+  - a Jeeves-style butler sorting a stack of papers with a monocle
+  - a sage in a Chinese scroll painting reading a ledger on a mountaintop
+  lesson_hint: LLM steps need guardrails; log traces, validate output against rules, and keep a human-checkable audit trail
+- term: MLflow
+  match:
+  - mlflow
+  - batch_predict
+  - model_weekly
+  refs:
+  - Da Vinci's notebooks recording each flying-machine experiment
+  - a Formula 1 pit crew logging every lap and tire change
+  - Darwin's field notebooks labeled by finch
+  lesson_hint: track every experiment with parameters and metrics so a model can be reproduced and compared
+- term: Superset dashboards
+  match:
+  - superset
+  - dashboard
+  - dap_
+  refs:
+  - the bridge of the Starship Enterprise with every screen a chart
+  - a Cold War mission-control room with a wall of gauges
+  - a cockpit in a Miyazaki airship, dials and a friendly compass
+  lesson_hint: dashboards are only as good as the dataset behind them; grant access and register the datasource with care
+- term: Excel and flat files
+  match:
+  - excel
+  - xlsx
+  - flat_file
+  - .csv
+  - gdrive
+  - gsheet
+  - budget_workbook
+  refs:
+  - a monk copying a hand-ruled ledger, then handing it to a printer
+  - an abacus in a Kyoto merchant's shop
+  - a library clerk transcribing handwritten cards into a neat catalog
+  lesson_hint: human spreadsheets are messy; choose the sheet, validate the headers, and keep the original
+- term: Redshift grants and users
+  match:
+  - grant
+  - create_user
+  - provision_schemas
+  - irsa
+  - secrets_backend
+  refs:
+  - a castle's keymaster handing a ring of labeled keys to a knight
+  - the Doorkeeper of the Emerald City checking a pass
+  - a bank vault in an old heist film, with a tidy sign-in sheet
+  lesson_hint: least privilege; grant by role, test the grant, and never hardcode a secret
+- term: Linear tickets
+  match:
+  - data-
+  - datasme-
+  - linear
+  refs:
+  - a Santa-style list of tasks being checked twice
+  - a Kanban board in a Toyota factory in the 1950s
+  - a ship's log with a numbered entry for each day
+  - a medieval herald announcing a quest with a number
+  lesson_hint: one ticket, one outcome; link the work to the ticket so the why is never lost
+- term: Code review
+  match:
+  - pr_review
+  - code review
+  - reviewer
+  - approved
+  refs:
+  - two chess players studying a position in a park
+  - a Michelin kitchen where the head chef tastes each plate
+  - Sherlock Holmes and Watson examining a diff with a magnifying glass
+  - a master and apprentice at a sword-smith's anvil
+  lesson_hint: review for correctness first; small diffs and clear intent make better reviews
+- term: Retries
+  match:
+  - retries
+  - retry_delay
+  - backoff
+  - tenacity
+  refs:
+  - Robert the Bruce watching a spider try again
+  - Rocky training on the steps, again and again
+  - Sisyphus pushing a boulder, but this time with exponential backoff and a good night's sleep
+  - Groundhog Day, each loop slightly smarter
+  lesson_hint: retry transient failures with backoff, but do not retry what cannot succeed; cap the attempts
+- term: Idempotency
+  match:
+  - idempotent
+  - idempotency
+  - if not exists
+  - on conflict
+  - upsert
+  - overwrite
+  - rerun
+  refs:
+  - a Japanese tea ceremony that always ends with the same tidy table
+  - Groundhog Day, where the outcome is identical every morning
+  - an etch-a-sketch that returns to the same drawing
+  - a light switch that does nothing if the light is already on
+  lesson_hint: a rerun must leave the same result; design writes so doing them twice is safe
+- term: Backfills
+  match:
+  - backfill
+  - catchup
+  - data_interval
+  - logical_date
+  - reprocess
+  refs:
+  - Doctor Who stepping back through time to fix a day
+  - Back to the Future's DeLorean on a well-planned timeline
+  - an archaeologist carefully restoring a mosaic one tile at a time
+  - a monk correcting an illuminated manuscript, line by line
+  lesson_hint: reruns over the past must be bounded and safe; use the logical date, never now()
+- term: Schema migrations
+  match:
+  - migration
+  - alter table
+  - add column
+  - drop column
+  - ddl_
+  - schema change
+  - breakfixer
+  refs:
+  - Moving Day for the Ghibli bathhouse, furniture labeled by room
+  - the Great Migration of wildebeest with a very good map
+  - a bridge being widened while the trains keep running
+  - Ikea assembly instructions for a bookshelf that is already in use
+  lesson_hint: change the schema in small reversible steps; dry-run first and keep a backup of what you drop
+- term: Tests
+  match:
+  - pytest
+  - test_
+  - tests/
+  - unit test
+  - fixture
+  refs:
+  - a crash test dummy gently smiling in a Volvo ad
+  - a canary in a coal mine, now a well-fed mascot
+  - a knight's armor being proofed with a crossbow bolt
+  - Bake Off judges tasting a loaf before it goes out
+  lesson_hint: tests describe the behavior you promise; keep them fast and add one for every bug you fix
+- term: Dev to main promotion
+  match:
+  - promotion
+  - dev -> main
+  - dev->main
+  - dev > main
+  - cutover
+  refs:
+  - a relay baton passed from the dev runner to the main runner at the Olympics
+  - a ship passing through a canal lock from one level to the next
+  - a sherpa team moving the camp up Everest one stage at a time
+  - a rocket staging in a Saturn V launch
+  lesson_hint: dev proves it, main runs it; check the run on dev before promoting and record the cutover
+- term: Git and CI
+  match:
+  - .github
+  - jenkins
+  - gh actions
+  - workflow_dispatch
+  refs:
+  - a lighthouse keeper turning the lamp for each ship that arrives
+  - a Rube Goldberg machine that works every time
+  - Swiss clockmakers checking each gear before sealing the case
+  lesson_hint: automate the boring checks; make failures loud and fix flaky ones fast
+- term: Logging and observability
+  match:
+  - logging
+  - logger
+  - observab
+  - healthcheck
+  - connectivity_check
+  refs:
+  - a ship's captain keeping a daily log by lamplight
+  - Sherlock Holmes reading a trail of footprints
+  - a lighthouse beam sweeping across a dark harbor
+  lesson_hint: log what you need at 3 a.m. (inputs, counts and decisions), never secrets
+- term: Config and environments
+  match:
+  - config/
+  - env_var
+  - per-environment
+  - multiple environments
+  refs:
+  - a theater with a dress rehearsal stage and a main stage
+  - a bakery's test oven and the real oven, same recipe
+  - twin lighthouses on two coasts, same lamp
+  lesson_hint: one codebase, many environments; configuration varies, logic does not
+- term: Data quality checks
+  match:
+  - data_quality
+  - validation
+  - validate
+  - dbt test
+  - expectations
+  - coverage
+  - drift
+  refs:
+  - a quality inspector in a Willy Wonka-style chocolate line, with a very kind clipboard
+  - a wine sommelier tasting from the barrel
+  - Marie Kondo checking each drawer for joy
+  - a gold assayer weighing nuggets on a brass scale
+  lesson_hint: check data where it lands; assert row counts, keys and coverage against the source
+- term: CDC and change history
+  match:
+  - cdc_
+  - change_log
+  - version_history
+  - snapshot
+  - value drift
+  refs:
+  - a monk's scriptorium noting each edit in the margin
+  - a Wikipedia edit-history scroll unrolled across a library
+  - a tree's growth rings, each ring a version
+  lesson_hint: record the change, not the whole copy; keep history small and replayable
+- term: Backup and delete
+  match:
+  - backup
+  - row_backup
+  - archive
+  - drop_table
+  - retention
+  - restore_
+  refs:
+  - a squirrel burying neat labeled acorns for winter
+  - the Svalbard Seed Vault under snow
+  - a Noah's Ark of tables saved before the flood
+  - a museum conservator archiving a fragile scroll in acid-free paper
+  lesson_hint: back up before you delete; keep a restore path and test it
+- term: Airflow
+  match:
+  - airflow
+  - dag
+  - '@task'
+  - taskflow
+  - schedule
+  - dags/
+  - operators/
+  - hooks/
+  refs:
+  - an orchestra conductor with each section a task, in the style of Fantasia
+  - a Swiss railway timetable with trains arriving exactly on time
+  - a Rube Goldberg machine of dominoes falling in a graph
+  - Studio Ghibli's Howl's Moving Castle, each room a task
+  - a grand orchestra pit at La Scala, all instruments in order
+  lesson_hint: DAGs are code; keep tasks small and idempotent, dependencies explicit, and the schedule honest

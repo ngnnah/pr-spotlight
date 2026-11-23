@@ -1,0 +1,11 @@
+# One file per team. Copy this to teams/<your-team>.yaml and fill it in.
+name: Example team
+repos:  # merged PRs here get spotlights; `about` tells the brief what the repo is (else its GitHub description)
+  - repo: your-org/web-app
+    about: the customer web app
+  - repo: your-org/data-pipelines
+start: 2026-01-01T00:00:00Z  # PRs merged before this get no spotlight
+auto_post: false  # false: each spotlight is rendered and held until someone runs ./spotlight.py post <repo>#<pr>
+slack_channel: ""  # a Slack channel id for a one-line post per spotlight; empty for none
+slack_tag: []  # GitHub logins to @-mention in that post when they're in the picture
+footer: Posted by pr-spotlight  # the comment's last line, after the style and reference
