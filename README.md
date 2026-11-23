@@ -2,7 +2,7 @@
 
 Every merged PR gets a comment with a picture of the people behind it and a short lesson from its diff. Reviewers are the stars: their time on other people's work usually goes unseen.
 
-See it in a picture-book deck: [PR Spotlight](https://ngnnah.github.io/I-And-AI/projects/pr-spotlight/). I built it in my free time, with Claude Code. MIT licensed.
+See it in a picture-book deck: [PR Spotlight](https://ngnnah.github.io/I-And-AI/projects/pr-spotlight/). MIT licensed.
 
 ## How it works
 
