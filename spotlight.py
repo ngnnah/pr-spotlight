@@ -765,7 +765,7 @@ def notify(text: str) -> None:
 
 
 def poll(team: dict) -> None:
-    """Every PR merged into a team repo's default branch or dev since the team's start, without a spotlight,
+    """Every PR merged into a team repo's default branch, dev or main since the team's start, without a spotlight,
     oldest first, at most MAX_PER_POLL per call."""
     print(f"--- poll {team['id']} {dt.datetime.now():%Y-%m-%d %H:%M}")
     auto = bool(team.get("auto_post"))
@@ -776,7 +776,8 @@ def poll(team: dict) -> None:
         default = gh_json(["repo", "view", repo, "--json", "defaultBranchRef"])["defaultBranchRef"]["name"]
         prs = gh_json(["pr", "list", "-R", repo, "--state", "merged", "--limit", "50",
                        "--search", f"merged:>={start}", "--json", "number,baseRefName,mergedAt"])
-        todo += [(p["mergedAt"], repo, p["number"]) for p in prs if p["baseRefName"] in (default, "dev")]
+        # main too: in a repo whose default branch is dev, promotions into main were missed (airflow-v3#419, #425, #426)
+        todo += [(p["mergedAt"], repo, p["number"]) for p in prs if p["baseRefName"] in (default, "dev", "main")]
     done = 0
     for _, repo, n in sorted(todo):
         if done >= MAX_PER_POLL:
