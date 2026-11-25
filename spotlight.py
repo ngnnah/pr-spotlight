@@ -835,7 +835,7 @@ def _md(s: str) -> str:
 def page() -> Path:
     """gallery-team.html (posted spotlights, for the team's claude.ai page) and, while no team has one,
     gallery.html (every spotlight, held or posted); filters, views, grouping and sorting run in the page.
-    poll and each post rewrite them. (GALLERY.md, a GitHub copy, went once the team page was live: Nhat, 2026-11-25.)"""
+    poll and each post rewrite them. (Nhat, 2026-11-25: no GALLERY.md copy once the team page was live.)"""
     runs = []
     for f in (ROOT / "spotlights").glob("*/*/run.json"):
         r = json.loads(f.read_text())
