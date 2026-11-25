@@ -55,7 +55,7 @@ def _self_repo() -> str:
 SELF = _self_repo()
 # The team when --team isn't given: the only one, or the first file in teams/.
 DEFAULT_TEAM = next((f.stem for f in sorted((ROOT / "teams").glob("*.yaml"))), "example")
-MAX_PER_POLL = 3  # spotlights per poll, so a night's catch-up doesn't spend the Codex window at once
+MAX_PER_POLL = 6  # spotlights per poll, so a night's catch-up doesn't spend the Codex window at once (3 until 2026-11-25)
 MIN_LINES = 30  # feature PRs with fewer changed lines get no spotlight
 TRIES = 2  # a PR that fails this many times waits for a person
 LAUNCH_AGENTS = Path.home() / "Library" / "LaunchAgents"
@@ -767,6 +767,7 @@ def notify(text: str) -> None:
 def poll(team: dict) -> None:
     """Every PR merged into a team repo's default branch, dev or main since the team's start, without a spotlight,
     oldest first, at most MAX_PER_POLL per call."""
+    sys.stdout.reconfigure(line_buffering=True)  # launchd's log file: each line as it happens, not at exit
     print(f"--- poll {team['id']} {dt.datetime.now():%Y-%m-%d %H:%M}")
     auto = bool(team.get("auto_post"))
     start = str(team.get("start") or dt.date.today()).replace(" ", "T").replace("+00:00", "Z")
@@ -924,13 +925,14 @@ def how_html() -> str:
         repos = ", ".join(f'<a href="https://github.com/{e(r["repo"])}">{e(r["repo"].split("/")[-1])}</a>' for r in t["repos"])
         every = int(t.get("gif_every") or 0)
         bits = [f"repos {repos}", f"PRs merged since {e(str(t.get('start', ''))[:10])}",
+                f"{e(t.get('runner') or 'a Mac')} checks every 15 minutes and makes at most {MAX_PER_POLL} spotlights "
+                f"each time, oldest merge first",
                 "posts on its own" if t.get("auto_post") else "each spotlight waits for a person to post it",
                 f"one spotlight in {every} is a looping GIF" if every else "no GIFs",
                 "a line in Slack for each" if t.get("slack_channel") else "no Slack line",
                 f'<a href="https://github.com/{SELF}/blob/main/teams/{e(f.name)}">settings</a>']
         rows.append(f"<li><b>{e(t.get('name', f.stem))}</b>: {'; '.join(bits)}.</li>")
     return (f"<ul>{''.join(rows)}</ul><ul>"
-            f"<li>A Mac checks every 15 minutes and makes at most {MAX_PER_POLL} spotlights each time, oldest merge first.</li>"
             f"<li>Every merged PR into dev, main or the default branch gets one, except PRs under {MIN_LINES} changed lines "
             f"and PRs that only touch CI or docs. Promotions from dev to main always get one.</li>"
             f"<li>A promotion stars its reviewers. A feature PR stars its opener; in about {REVIEWERS_PCT}% of them, "

@@ -28,7 +28,7 @@ See it in a picture-book deck: [PR Spotlight](https://ngnnah.github.io/I-And-AI/
 3. OpenAI's image model draws it, through the Codex CLI signed in to a ChatGPT plan. No API key.
 4. The image is committed to your copy of this repo, the caption and image go on the PR as a comment, and an optional one-line post goes to Slack, through Claude Code's Slack connector.
 
-A job on a Mac runs this every 15 minutes, at most three PRs a run. Spotlights wait for a person to post them until you turn on `auto_post`.
+A job on a Mac runs this every 15 minutes, at most six PRs a run. Spotlights wait for a person to post them until you turn on `auto_post`.
 
 ## Faces are opt-in
 
