@@ -13,7 +13,7 @@ of lessons from the diff, posted as a PR comment and in Slack. Each team is team
     ./spotlight.py poll               PRs merged since the team's start without a spotlight, three at most
     ./spotlight.py install            the launchd job: poll every 15 minutes, at login, and once on wake
     ./spotlight.py usage              the Codex limits from the newest session log
-    ./spotlight.py page               gallery.html: every spotlight, held or posted, with picture and caption
+    ./spotlight.py page               gallery.html: every spotlight, held or posted; GALLERY.md: the posted ones, for GitHub
 
 <pr> is <repo>#<number> (web-app#12) or a bare number for the team's first repo. --team picks the
 team file (default: the first in teams/).
@@ -529,7 +529,8 @@ def comment_body(repo: str, pr: int, run: dict) -> str:
 
 def git_push(repo: str, pr: int, msg: str) -> None:
     # Commit first, then rebase onto origin: a pull refuses while run.json has unstaged changes.
-    sh(["git", "-C", str(ROOT), "add", str(spot_dir(repo, pr).relative_to(ROOT)), "log.jsonl"])
+    sh(["git", "-C", str(ROOT), "add", str(spot_dir(repo, pr).relative_to(ROOT)), "log.jsonl"]
+       + (["GALLERY.md"] if (ROOT / "GALLERY.md").exists() else []))
     if subprocess.run(["git", "-C", str(ROOT), "diff", "--cached", "--quiet"]).returncode:
         sh(["git", "-C", str(ROOT), "commit", "-q", "-m",
             f"{msg}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"])
@@ -573,6 +574,7 @@ def publish(repo: str, pr: int, run: dict, team: dict) -> dict:
     except Exception as e:  # the PR comment is the main post; Slack is a bonus
         run["posted"]["slack_error"] = str(e)[:300]
     write_run(repo, pr, run)
+    page()  # gallery.html and GALLERY.md show it as posted
     git_push(repo, pr, f"Spotlight {short(repo, pr)}: posted")
     return run
 
@@ -733,75 +735,134 @@ def _md(s: str) -> str:
     return "".join(out)
 
 
+def gallery_md(runs: list) -> None:
+    """GALLERY.md, for GitHub: the posted spotlights, newest first, three across. Held pictures aren't pushed yet."""
+    posted = [(d, r) for d, r in runs if (r.get("posted") or {}).get("comment")]
+    cells = []
+    for d, r in posted:
+        img = next((d / n for n in ("image.gif", "image.jpg") if (d / n).exists()), None)
+        if not img:
+            continue
+        title = html.escape(r.get("title", ""))
+        cells.append(f'<td width="33%" valign="top"><a href="{r["posted"]["comment"]}"><img src="{img.relative_to(ROOT)}" '
+                     f'alt="{title}"></a><br><b>{short(r["repo"], r["pr"])} · {title}</b><br>'
+                     f'<sub>{html.escape(r.get("style_name", ""))} · {r.get("date", "")}</sub></td>')
+    rows = ["<tr>\n" + "\n".join(cells[i:i + 3]) + "\n</tr>" for i in range(0, len(cells), 3)]
+    (ROOT / "GALLERY.md").write_text(
+        f"# 🔦 Posted spotlights\n\n{len(cells)} so far, newest first. Click a picture for its PR comment.\n\n"
+        "<table>\n" + "\n".join(rows) + "\n</table>\n")
+
+
 def page() -> Path:
-    """gallery.html: every spotlight, held or posted, newest first, with its picture and caption. poll rewrites it."""
-    cards, counts = [], {"held": 0, "posted": 0, "failed": 0}
+    """gallery.html: every spotlight, held or posted, with picture and caption; filters, views, grouping and sorting
+    run in the page. poll and each post rewrite it, and GALLERY.md with it."""
     runs = []
     for f in (ROOT / "spotlights").glob("*/*/run.json"):
         r = json.loads(f.read_text())
         if r.get("prompt"):
             runs.append((f.parent, r))
     runs.sort(key=lambda x: (x[1].get("posted", {}).get("at") or x[1].get("date") or "", x[1].get("pr", 0)), reverse=True)
+    items = []
     for d, r in runs:
         img = next((d / n for n in ("image.gif", "image.jpg") if (d / n).exists()), None)
-        comment = (r.get("posted") or {}).get("comment")
-        state = "posted" if comment else "failed" if r.get("error") and not img else "held" if img else ""
+        posted = r.get("posted") or {}
+        state = "posted" if posted.get("comment") else "failed" if r.get("error") and not img else "held" if img else ""
         if not state:
             continue
-        counts[state] += 1
-        tag = short(r["repo"], r["pr"])
-        if state == "posted":
-            action = f'<a class="btn" href="{html.escape(comment)}">PR comment</a>'
-        elif state == "held":
-            action = f'<code class="cmd">./spotlight.py post {tag}</code>'
-        else:
-            action = f'<span class="err">{html.escape(r.get("error", "")[:200])}</span>'
-        cast = ", ".join(c["name"] + (" 📷" if c.get("likeness") else "") for c in r.get("cast", []))
-        pic = (f'<img loading="lazy" src="{img.relative_to(ROOT)}" alt="{html.escape(r.get("title", ""))}">' if img else "")
-        cards.append(f"""<article class="card {state}" data-state="{state}">
-  {pic}
-  <div class="body">
-    <div class="row"><span class="pill {state}">{state}</span><a class="pr" href="{html.escape(r.get('pr_url', ''))}">{tag}</a><span class="date">{r.get('date', '')}</span></div>
-    <h2>{html.escape(r.get('title', ''))}</h2>
-    <p class="prt">{html.escape(r.get('pr_title', ''))}</p>
-    <div class="cap">{_md(r.get('caption', ''))}</div>
-    <p class="meta">{html.escape(r.get('style_name', ''))} · {html.escape(r.get('reference', ''))} · {html.escape(cast)}</p>
-    {action}
-  </div>
-</article>""")
+        items.append({
+            "repo": r["repo"].split("/")[-1], "pr": r["pr"], "tag": short(r["repo"], r["pr"]), "state": state,
+            "date": r.get("date", ""), "at": posted.get("at") or r.get("date", ""),
+            "title": r.get("title", ""), "prTitle": r.get("pr_title", ""), "prUrl": r.get("pr_url", ""),
+            "caption": _md(r.get("caption", "")), "style": r.get("style_name", ""), "reference": r.get("reference", ""),
+            "cast": ", ".join(c["name"] + (" 📷" if c.get("likeness") else "") for c in r.get("cast", [])),
+            "img": str(img.relative_to(ROOT)) if img else "", "gif": bool(img and img.suffix == ".gif"),
+            "promotion": bool(r.get("promotion")), "comment": posted.get("comment", ""), "slack": posted.get("slack", ""),
+            "error": (r.get("error") or "")[:200]})
+    gallery_md(runs)
+    data = json.dumps(items, ensure_ascii=False).replace("</", "<\\/")
     now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
     out = ROOT / "gallery.html"
-    out.write_text(f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
+    out.write_text(PAGE_HTML.replace("__NOW__", now).replace("__DATA__", data))
+    return out
+
+
+PAGE_HTML = r"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>PR spotlights</title>
 <style>
-:root{{--bg:#f7f8f4;--card:#fff;--ink:#22302a;--dim:#5d6b64;--edge:#dfe5dc;--held:#fdf1c7;--held-ink:#7a5d00;--posted:#dcefe2;--posted-ink:#256a3e;--failed:#fbe0e0;--failed-ink:#9a2e2e;--link:#2f6db5;--code:#eef2f7}}
-@media (prefers-color-scheme:dark){{:root{{--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--link:#8cb8ee;--code:#26302d;color-scheme:dark}}}}
-*{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left))}}
-header{{max-width:1200px;margin:0 auto 18px}}h1{{font-size:24px;margin:0 0 6px}}.sub{{color:var(--dim);margin:0 0 12px}}
-.tabs button{{font:inherit;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;margin:0 6px 6px 0;cursor:pointer}}
-.tabs button[aria-pressed=true]{{background:var(--ink);color:var(--bg)}}
-main{{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}}
-.card{{background:var(--card);border:1px solid var(--edge);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}}
-.card img{{width:100%;display:block;aspect-ratio:3/2;object-fit:cover;cursor:zoom-in}}.card img.big{{aspect-ratio:auto;object-fit:contain;cursor:zoom-out}}
-.body{{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}}
-.row{{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}}.date{{color:var(--dim);margin-left:auto}}
-.pill{{border-radius:999px;padding:1px 9px;font-weight:700;font-size:12px}}.pill.held{{background:var(--held);color:var(--held-ink)}}.pill.posted{{background:var(--posted);color:var(--posted-ink)}}.pill.failed{{background:var(--failed);color:var(--failed-ink)}}
-a{{color:var(--link)}}.pr{{font-weight:600}}h2{{font-size:18px;margin:2px 0 0}}.prt{{color:var(--dim);margin:0;font-size:13px}}
-.cap p{{margin:4px 0}}.cap ul{{margin:4px 0;padding-left:18px}}.cap li{{margin:2px 0}}code{{background:var(--code);border-radius:4px;padding:0 4px;font-size:13px;overflow-wrap:anywhere}}
-.meta{{color:var(--dim);font-size:12.5px;margin:6px 0 4px}}.btn{{align-self:flex-start;font-weight:600}}.cmd{{align-self:flex-start;cursor:copy}}.err{{color:var(--failed-ink);font-size:13px}}
+:root{--bg:#f7f8f4;--card:#fff;--ink:#22302a;--dim:#5d6b64;--edge:#dfe5dc;--held:#fdf1c7;--held-ink:#7a5d00;--posted:#dcefe2;--posted-ink:#256a3e;--failed:#fbe0e0;--failed-ink:#9a2e2e;--gif:#e3ecfb;--gif-ink:#2d5a9e;--link:#2f6db5;--code:#eef2f7}
+@media (prefers-color-scheme:dark){:root{--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--gif:#1f2f4a;--gif-ink:#a9c6f2;--link:#8cb8ee;--code:#26302d;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left))}
+header,main{max-width:1200px;margin:0 auto}h1{font-size:24px;margin:0 0 6px}.sub{color:var(--dim);margin:0 0 12px}
+.bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:18px}.grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.grp>span{color:var(--dim);font-size:13px}
+.bar button{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.bar button[aria-pressed=true]{background:var(--ink);color:var(--bg)}.bar select{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 8px}
+h3.gh{font-size:16px;margin:22px 0 10px;color:var(--dim)}h3.gh b{color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
+.card .pic{position:relative}.card img{width:100%;display:block;aspect-ratio:3/2;object-fit:cover;cursor:zoom-in}.card img.big{aspect-ratio:auto;object-fit:contain;cursor:zoom-out}
+.gtag{position:absolute;left:10px;top:10px;background:var(--gif);color:var(--gif-ink);font-weight:800;font-size:12px;border-radius:999px;padding:2px 9px}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}.date{color:var(--dim);margin-left:auto}
+.pill{border-radius:999px;padding:1px 9px;font-weight:700;font-size:12px}.pill.held{background:var(--held);color:var(--held-ink)}.pill.posted{background:var(--posted);color:var(--posted-ink)}.pill.failed{background:var(--failed);color:var(--failed-ink)}.pill.promo{background:var(--gif);color:var(--gif-ink)}
+a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{color:var(--dim);margin:0;font-size:13px}
+.cap p{margin:4px 0}.cap ul{margin:4px 0;padding-left:18px}.cap li{margin:2px 0}code{background:var(--code);border-radius:4px;padding:0 4px;font-size:13px;overflow-wrap:anywhere}
+.meta{color:var(--dim);font-size:12.5px;margin:6px 0 4px}.links{display:flex;gap:14px;flex-wrap:wrap;font-weight:600;font-size:14px}.cmd{cursor:copy;font-weight:400}.err{color:var(--failed-ink);font-size:13px}
+.list .card{flex-direction:row;margin-bottom:12px}.list .card .pic{flex:0 0 240px}.list .card img{height:100%;min-height:160px}
+.list .cap{display:none}.list .card.open .cap{display:block}.list .more{display:inline}.more{display:none;font-size:13px;color:var(--link);cursor:pointer;background:none;border:0;padding:0;font:inherit;font-size:13px;align-self:flex-start}
+@media (max-width:640px){.list .card{flex-direction:column}.list .card .pic{flex:none}}
+.empty{color:var(--dim);padding:40px 0;text-align:center}
 </style></head><body>
-<header><h1>🔦 PR spotlights</h1>
-<p class="sub">{counts['held']} held · {counts['posted']} posted{f" · {counts['failed']} failed" if counts['failed'] else ""} · updated {now}. Held ones wait for <code>./spotlight.py post &lt;repo&gt;#&lt;pr&gt;</code>; click a command to copy it, a picture to see it whole.</p>
-<nav class="tabs"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="held">Held</button><button aria-pressed="false" data-f="posted">Posted</button>{'<button aria-pressed="false" data-f="failed">Failed</button>' if counts['failed'] else ''}</nav></header>
-<main>{"".join(cards)}</main>
+<header><h1>🔦 PR spotlights</h1><p class="sub" id="sub"></p>
+<div class="bar">
+ <div class="grp" id="state"><button data-v="all">All</button><button data-v="held">Held</button><button data-v="posted">Posted</button><button data-v="failed">Failed</button></div>
+ <div class="grp"><button id="gif" aria-pressed="false">▶ GIFs</button><button id="promo" aria-pressed="false">Releases</button></div>
+ <div class="grp" id="view"><span>View</span><button data-v="grid">Grid</button><button data-v="list">List</button></div>
+ <label class="grp"><span>Group by</span><select id="group"><option value="">None</option><option value="repo">Repo</option><option value="state">State</option><option value="style">Style</option><option value="date">Day</option><option value="cast">Cast</option></select></label>
+ <label class="grp"><span>Sort</span><select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="prd">PR number, high to low</option><option value="pra">PR number, low to high</option><option value="title">Title A to Z</option></select></label>
+</div></header>
+<main id="out"></main>
 <script>
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{{document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-pressed',x===b));
-document.querySelectorAll('.card').forEach(c=>c.hidden=b.dataset.f!=='all'&&c.dataset.state!==b.dataset.f)}});
-document.querySelectorAll('.card img').forEach(i=>i.onclick=()=>i.classList.toggle('big'));
-document.querySelectorAll('.cmd').forEach(c=>c.onclick=()=>navigator.clipboard&&navigator.clipboard.writeText(c.textContent).then(()=>{{const t=c.textContent;c.textContent='copied';setTimeout(()=>c.textContent=t,900)}}));
+const DATA=__DATA__;
+const S=(()=>{try{return JSON.parse(localStorage.getItem('spot')||'{}')}catch(e){return {}}})();
+const st=Object.assign({state:'all',gif:false,promo:false,view:'grid',group:'',sort:'new'},S);
+const save=()=>{try{localStorage.setItem('spot',JSON.stringify(st))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const counts=DATA.reduce((a,d)=>(a[d.state]=(a[d.state]||0)+1,a),{});
+document.getElementById('sub').innerHTML=`${counts.held||0} held · ${counts.posted||0} posted${counts.failed?` · ${counts.failed} failed`:''} · ${(n=>n+(n===1?' GIF':' GIFs'))(DATA.filter(d=>d.gif).length)} · updated __NOW__. Click a command to copy it, a picture to see it whole.`;
+if(!counts.failed)document.querySelector('#state [data-v=failed]').hidden=true;
+function card(d){
+ const act=d.state==='posted'?`<a href="${esc(d.comment)}">PR comment</a>${d.slack?`<a href="${esc(d.slack)}">#jenkins</a>`:''}`:d.state==='held'?`<code class="cmd">./spotlight.py post ${esc(d.tag)}</code>`:`<span class="err">${esc(d.error)}</span>`;
+ return `<article class="card"><div class="pic">${d.img?`<img loading="lazy" src="${esc(d.img)}" alt="${esc(d.title)}">`:''}${d.gif?'<span class="gtag">▶ GIF</span>':''}</div>
+ <div class="body"><div class="row"><span class="pill ${d.state}">${d.state}</span>${d.promotion?'<span class="pill promo">release</span>':''}<a class="pr" href="${esc(d.prUrl)}">${esc(d.tag)}</a><span class="date">${esc(d.date)}</span></div>
+ <h2>${esc(d.title)}</h2><p class="prt">${esc(d.prTitle)}</p><button class="more">Caption</button><div class="cap">${d.caption}</div>
+ <p class="meta">${esc(d.style)} · ${esc(d.reference)} · ${esc(d.cast)}</p><div class="links">${act}</div></div></article>`}
+const keyOf={repo:d=>d.repo,state:d=>d.state,style:d=>d.style,date:d=>d.date,cast:d=>d.cast.split(', ')[0]||'—'};
+const sorts={new:(a,b)=>b.at.localeCompare(a.at)||b.pr-a.pr,old:(a,b)=>a.at.localeCompare(b.at)||a.pr-b.pr,prd:(a,b)=>b.pr-a.pr,pra:(a,b)=>a.pr-b.pr,title:(a,b)=>a.title.localeCompare(b.title)};
+function render(){
+ document.querySelectorAll('#state button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.state));
+ document.querySelectorAll('#view button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.view));
+ document.getElementById('gif').setAttribute('aria-pressed',st.gif);document.getElementById('promo').setAttribute('aria-pressed',st.promo);
+ document.getElementById('group').value=st.group;document.getElementById('sort').value=st.sort;
+ let ds=DATA.filter(d=>(st.state==='all'||d.state===st.state)&&(!st.gif||d.gif)&&(!st.promo||d.promotion)).sort(sorts[st.sort]);
+ const cls=st.view==='list'?'list':'grid', out=document.getElementById('out');
+ if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
+ if(!st.group){out.innerHTML=`<div class="${cls}">${ds.map(card).join('')}</div>`}
+ else{const g=new Map();ds.forEach(d=>{const k=keyOf[st.group](d);g.set(k,[...(g.get(k)||[]),d])});
+  out.innerHTML=[...g].map(([k,v])=>`<h3 class="gh"><b>${esc(k)}</b> · ${v.length}</h3><div class="${cls}">${v.map(card).join('')}</div>`).join('')}
+}
+document.getElementById('state').onclick=e=>{if(e.target.dataset.v){st.state=e.target.dataset.v;save();render()}};
+document.getElementById('view').onclick=e=>{if(e.target.dataset.v){st.view=e.target.dataset.v;save();render()}};
+document.getElementById('gif').onclick=()=>{st.gif=!st.gif;save();render()};
+document.getElementById('promo').onclick=()=>{st.promo=!st.promo;save();render()};
+document.getElementById('group').onchange=e=>{st.group=e.target.value;save();render()};
+document.getElementById('sort').onchange=e=>{st.sort=e.target.value;save();render()};
+document.getElementById('out').onclick=e=>{const t=e.target;
+ if(t.matches('.card img'))t.classList.toggle('big');
+ if(t.matches('.more'))t.closest('.card').classList.toggle('open');
+ if(t.matches('.cmd')&&navigator.clipboard){const v=t.textContent;navigator.clipboard.writeText(v).then(()=>{t.textContent='copied';setTimeout(()=>t.textContent=v,900)},()=>{})}};
+render();
 </script></body></html>
-""")
-    return out
+"""
 
 
 def install(team: dict) -> None:
