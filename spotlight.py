@@ -14,7 +14,7 @@ of lessons from the diff, posted as a PR comment and in Slack. Each team is team
     ./spotlight.py install            the launchd job: poll every 15 minutes, at login, and once on wake
     ./spotlight.py usage              the Codex limits from the newest session log
     ./spotlight.py page               gallery-team.html: the posted ones, for a team's claude.ai page; gallery.html: every
-                                      spotlight, held or posted, while no team has that page; GALLERY.md, for GitHub
+                                      spotlight, held or posted, while no team has that page
 
 <pr> is <repo>#<number> (web-app#12) or a bare number for the team's first repo. --team picks the
 team file (default: the first in teams/).
@@ -610,8 +610,7 @@ def comment_body(repo: str, pr: int, run: dict) -> str:
 
 def git_push(repo: str, pr: int, msg: str) -> None:
     # Commit first, then rebase onto origin: a pull refuses while run.json has unstaged changes.
-    sh(["git", "-C", str(ROOT), "add", str(spot_dir(repo, pr).relative_to(ROOT)), "log.jsonl"]
-       + (["GALLERY.md"] if (ROOT / "GALLERY.md").exists() else []))
+    sh(["git", "-C", str(ROOT), "add", str(spot_dir(repo, pr).relative_to(ROOT)), "log.jsonl"])
     if subprocess.run(["git", "-C", str(ROOT), "diff", "--cached", "--quiet"]).returncode:
         sh(["git", "-C", str(ROOT), "commit", "-q", "-m",
             f"{msg}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"])
@@ -655,7 +654,7 @@ def publish(repo: str, pr: int, run: dict, team: dict) -> dict:
     except Exception as e:  # the PR comment is the main post; Slack is a bonus
         run["posted"]["slack_error"] = str(e)[:300]
     write_run(repo, pr, run)
-    page()  # gallery.html and GALLERY.md show it as posted
+    page()  # the gallery shows it as posted
     git_push(repo, pr, f"Spotlight {short(repo, pr)}: posted")
     return run
 
@@ -836,28 +835,12 @@ def _md(s: str) -> str:
     return "".join(out)
 
 
-def gallery_md(runs: list) -> None:
-    """GALLERY.md, for GitHub: the posted spotlights, newest first, three across. Held pictures aren't pushed yet."""
-    posted = [(d, r) for d, r in runs if (r.get("posted") or {}).get("comment")]
-    cells = []
-    for d, r in posted:
-        img = next((d / n for n in ("image.gif", "image.jpg") if (d / n).exists()), None)
-        if not img:
-            continue
-        title = html.escape(r.get("title", ""))
-        cells.append(f'<td width="33%" valign="top"><a href="{r["posted"]["comment"]}"><img src="{img.relative_to(ROOT)}" '
-                     f'alt="{title}"></a><br><b>{short(r["repo"], r["pr"])} · {title}</b><br>'
-                     f'<sub>{html.escape(r.get("style_name", ""))} · {r.get("date", "")}</sub></td>')
-    rows = ["<tr>\n" + "\n".join(cells[i:i + 3]) + "\n</tr>" for i in range(0, len(cells), 3)]
-    (ROOT / "GALLERY.md").write_text(
-        f"# 🔦 Posted spotlights\n\n{len(cells)} so far, newest first. Click a picture for its PR comment.\n\n"
-        "<table>\n" + "\n".join(rows) + "\n</table>\n")
 
 
 def page() -> Path:
     """gallery-team.html (posted spotlights, for the team's claude.ai page) and, while no team has one,
     gallery.html (every spotlight, held or posted); filters, views, grouping and sorting run in the page.
-    poll and each post rewrite them, and GALLERY.md with them."""
+    poll and each post rewrite them. (GALLERY.md, a GitHub copy, went once the team page was live: Nhat, 2026-11-25.)"""
     runs = []
     for f in (ROOT / "spotlights").glob("*/*/run.json"):
         r = json.loads(f.read_text())
@@ -880,7 +863,6 @@ def page() -> Path:
             "img": str(img.relative_to(ROOT)) if img else "", "gif": bool(img and img.suffix == ".gif"),
             "promotion": bool(r.get("promotion")), "comment": posted.get("comment", ""), "slack": posted.get("slack", ""),
             "error": (r.get("error") or "")[:200]})
-    gallery_md(runs)
     now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     def fill(its: list, shared: bool) -> str:
