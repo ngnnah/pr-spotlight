@@ -15,6 +15,8 @@ of lessons from the diff, posted as a PR comment and in Slack. Each team is team
     ./spotlight.py usage              the Codex limits from the newest session log
     ./spotlight.py page               gallery-team.html: the posted ones, for a team's claude.ai page; gallery.html: every
                                       spotlight, held or posted, while no team has that page
+    ./spotlight.py share              republish the team's claude.ai page (gallery_url) with its new spotlights; run it
+                                      from an open Claude Code session, since a run launchd starts has no Artifact tool
 
 <pr> is <repo>#<number> (web-app#12) or a bare number for the team's first repo. --team picks the
 team file (default: the first in teams/).
@@ -803,17 +805,10 @@ def poll(team: dict) -> None:
         if (r.get("posted") or {}).get("comment"):
             posted += 1
     page()
-    if posted:
-        print_share(team)
-
-
-def print_share(team: dict) -> None:
-    """The team's claude.ai page gets the new spotlights; a failure there never stops a post."""
-    try:
-        if said := share_gallery(team):
-            print(f"gallery page: {said[:300]}")
-    except Exception as e:
-        print(f"gallery page failed: {str(e)[:300]}")
+    if posted and team.get("gallery_url"):
+        # A Claude run started by launchd gets no Artifact tool, so the page is republished from an open
+        # Claude session with ./spotlight.py share (Nhat, 2026-11-25).
+        print(f"gallery page: {posted} new; republish it from a Claude session: ./spotlight.py share --team {team['id']}")
 
 
 def _md(s: str) -> str:
@@ -931,7 +926,7 @@ def how_html() -> str:
             f'<a href="https://github.com/{SELF}/tree/main/people">Add your photo, totem or a joke</a>.</li></ul>')
 
 
-PAGE_HTML = r"""<title>PR spotlights</title>
+PAGE_HTML = r"""<title>PR-spotlights gallery</title>
 <style>
 :root{--bg:#f7f8f4;--card:#fff;--ink:#22302a;--dim:#5d6b64;--edge:#dfe5dc;--held:#fdf1c7;--held-ink:#7a5d00;--posted:#dcefe2;--posted-ink:#256a3e;--failed:#fbe0e0;--failed-ink:#9a2e2e;--gif:#e3ecfb;--gif-ink:#2d5a9e;--link:#2f6db5;--code:#eef2f7}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--gif:#1f2f4a;--gif-ink:#a9c6f2;--link:#8cb8ee;--code:#26302d;color-scheme:dark}}
@@ -1068,7 +1063,7 @@ def usage() -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["run", "post", "recaption", "update", "poll", "install", "usage", "page"])
+    ap.add_argument("cmd", choices=["run", "post", "recaption", "update", "poll", "install", "usage", "page", "share"])
     ap.add_argument("pr", nargs="?", help="<repo>#<number>, or a bare number for the team's first repo")
     ap.add_argument("--team", default=DEFAULT_TEAM, help=f"teams/<team>.yaml (default: {DEFAULT_TEAM})")
     ap.add_argument("--dry-run", action="store_true", help="stop after the brief")
@@ -1085,6 +1080,8 @@ def main() -> None:
     team = load_team(a.team)
     if a.cmd == "poll":
         poll(team)
+    elif a.cmd == "share":
+        print(share_gallery(team) or "no gallery_url in the team file")
     elif a.cmd == "install":
         install(team)
     elif not a.pr:
@@ -1103,7 +1100,6 @@ def main() -> None:
                 sys.exit(f"{short(repo, pr)}: no brief yet; run it first")
             run = publish(repo, pr, run, team)
             print(run["posted"])
-            print_share(team)
 
 
 if __name__ == "__main__":
