@@ -6,6 +6,7 @@ repos:  # merged PRs here get spotlights; `about` tells the brief what the repo 
   - repo: your-org/data-pipelines
 start: 2026-01-01T00:00:00Z  # PRs merged before this get no spotlight
 gif_every: 5  # every 5th spotlight is a looping GIF, eight frames in one render; 0 for none
+gallery_url: ""  # a claude.ai page for the team's gallery, republished after each post through claude -p; empty for none
 auto_post: false  # false: each spotlight is rendered and held until someone runs ./spotlight.py post <repo>#<pr>
 slack_channel: ""  # a Slack channel id for a one-line post per spotlight; empty for none
 slack_tag: []  # GitHub logins to @-mention in that post when they're in the picture

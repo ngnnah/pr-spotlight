@@ -776,9 +776,9 @@ def poll(team: dict) -> None:
         default = gh_json(["repo", "view", repo, "--json", "defaultBranchRef"])["defaultBranchRef"]["name"]
         prs = gh_json(["pr", "list", "-R", repo, "--state", "merged", "--limit", "50",
                        "--search", f"merged:>={start}", "--json", "number,baseRefName,mergedAt"])
-        # main too: in a repo whose default branch is dev, promotions into main were missed (airflow-v3#419, #425, #426)
+        # main too: in a repo whose default branch is dev, promotions into main were missed (Nhat, 2026-11-25)
         todo += [(p["mergedAt"], repo, p["number"]) for p in prs if p["baseRefName"] in (default, "dev", "main")]
-    done = 0
+    done = posted = 0
     for _, repo, n in sorted(todo):
         if done >= MAX_PER_POLL:
             break
@@ -792,14 +792,27 @@ def poll(team: dict) -> None:
             print(f"{tag}: skipped, {why}")
             continue
         done += 1
-        r = run_one(repo, n, team, no_post=not auto)
+        r = run_one(repo, n, team, no_post=not auto)  # posts when auto_post is on
         if r.get("error"):
             r["tries"] = r.get("tries", 0) + 1
             write_run(repo, n, r)
             notify(f"{tag} failed ({r['tries']} of {TRIES}): {r['error'][:80]}")
         elif not auto:
             notify(f"{tag} rendered: {r['title']}. Post it with ./spotlight.py post {tag} --team {team['id']}")
+        if (r.get("posted") or {}).get("comment"):
+            posted += 1
     page()
+    if posted:
+        print_share(team)
+
+
+def print_share(team: dict) -> None:
+    """The team's claude.ai page gets the new spotlights; a failure there never stops a post."""
+    try:
+        if said := share_gallery(team):
+            print(f"gallery page: {said[:300]}")
+    except Exception as e:
+        print(f"gallery page failed: {str(e)[:300]}")
 
 
 def _md(s: str) -> str:
@@ -865,18 +878,73 @@ def page() -> Path:
             "promotion": bool(r.get("promotion")), "comment": posted.get("comment", ""), "slack": posted.get("slack", ""),
             "error": (r.get("error") or "")[:200]})
     gallery_md(runs)
-    data = json.dumps(items, ensure_ascii=False).replace("</", "<\\/")
     now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    def fill(its: list, shared: bool) -> str:
+        data = json.dumps(its, ensure_ascii=False).replace("</", "<\\/")
+        return (PAGE_HTML.replace("__NOW__", now).replace("__HOW__", how_html())
+                .replace("__SHARED__", "true" if shared else "false").replace("__DATA__", data))
+
     out = ROOT / "gallery.html"
-    out.write_text(PAGE_HTML.replace("__NOW__", now).replace("__DATA__", data))
+    out.write_text('<!doctype html><html lang="en"><meta charset="utf-8">'
+                   '<meta name="viewport" content="width=device-width, initial-scale=1">\n' + fill(items, False))
+    # the team's copy on claude.ai: posted spotlights only; the Artifact tool wraps it in the document skeleton
+    (ROOT / "gallery-team.html").write_text(fill([i for i in items if i["state"] == "posted"], True))
     return out
 
 
-PAGE_HTML = r"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>PR spotlights</title>
+def share_gallery(team: dict) -> str:
+    """Republish gallery-team.html to the team's claude.ai page (gallery_url) with the images it doesn't have yet,
+    through claude -p and its Artifact tool. gallery-team.files lists the images already there."""
+    url = team.get("gallery_url")
+    if not url:
+        return ""
+    page()
+    sent_f = ROOT / "gallery-team.files"
+    sent = set(sent_f.read_text().split()) if sent_f.exists() else set()
+    need = re.findall(r'"img": ?"([^"]+)"', (ROOT / "gallery-team.html").read_text())
+    new = [p for p in need if p not in sent]
+    ask = (f"Update the claude.ai artifact {url}. First call the Artifact tool with action read and url {url}. "
+           f"Then call it with action publish, url {url}, file_path {ROOT / 'gallery-team.html'}"
+           + (f", and files {json.dumps([{'path': p} for p in new])}" if new else "")
+           + ". Change nothing else. Reply with only the word ok, or the error.")
+    out = sh(["claude", "-p", "--output-format", "json", "--allowedTools", "Artifact"], input=ask, cwd=str(ROOT), timeout=600)
+    said = json.loads(out).get("result", "").strip()
+    if said.lower().startswith("ok"):
+        sent_f.write_text("\n".join(sorted(sent | set(new))) + "\n")
+    return said
+
+
+def how_html() -> str:
+    """The page's folded "How it works" panel, read from teams/*.yaml and the rules above, so it can't drift."""
+    e = html.escape
+    rows = []
+    for f in sorted((ROOT / "teams").glob("*.yaml")):
+        t = load_team(f.stem)
+        repos = ", ".join(f'<a href="https://github.com/{e(r["repo"])}">{e(r["repo"].split("/")[-1])}</a>' for r in t["repos"])
+        every = int(t.get("gif_every") or 0)
+        bits = [f"repos {repos}", f"PRs merged since {e(str(t.get('start', ''))[:10])}",
+                "posts on its own" if t.get("auto_post") else "each spotlight waits for a person to post it",
+                f"one spotlight in {every} is a looping GIF" if every else "no GIFs",
+                "a line in Slack for each" if t.get("slack_channel") else "no Slack line",
+                f'<a href="https://github.com/{SELF}/blob/main/teams/{e(f.name)}">settings</a>']
+        rows.append(f"<li><b>{e(t.get('name', f.stem))}</b>: {'; '.join(bits)}.</li>")
+    return (f"<ul>{''.join(rows)}</ul><ul>"
+            f"<li>A Mac checks every 15 minutes and makes at most {MAX_PER_POLL} spotlights each time, oldest merge first.</li>"
+            f"<li>Every merged PR into dev, main or the default branch gets one, except PRs under {MIN_LINES} changed lines "
+            f"and PRs that only touch CI or docs. Promotions from dev to main always get one.</li>"
+            f"<li>A promotion stars its reviewers. A feature PR stars its opener; in about {REVIEWERS_PCT}% of them, "
+            f"up to {MAX_REVIEWERS} reviewers join the picture.</li>"
+            f"<li>Faces only for people who said yes; everyone else appears as their totem. "
+            f'<a href="https://github.com/{SELF}/tree/main/people">Add your photo, totem or a joke</a>.</li></ul>')
+
+
+PAGE_HTML = r"""<title>PR spotlights</title>
 <style>
 :root{--bg:#f7f8f4;--card:#fff;--ink:#22302a;--dim:#5d6b64;--edge:#dfe5dc;--held:#fdf1c7;--held-ink:#7a5d00;--posted:#dcefe2;--posted-ink:#256a3e;--failed:#fbe0e0;--failed-ink:#9a2e2e;--gif:#e3ecfb;--gif-ink:#2d5a9e;--link:#2f6db5;--code:#eef2f7}
-@media (prefers-color-scheme:dark){:root{--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--gif:#1f2f4a;--gif-ink:#a9c6f2;--link:#8cb8ee;--code:#26302d;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--gif:#1f2f4a;--gif-ink:#a9c6f2;--link:#8cb8ee;--code:#26302d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--gif:#1f2f4a;--gif-ink:#a9c6f2;--link:#8cb8ee;--code:#26302d;color-scheme:dark}
+.how{max-width:1200px;margin:32px auto 0;border-top:1px solid var(--edge)}.how ul{margin:6px 0 10px;padding-left:20px;max-width:75ch}.how li{margin:4px 0}
 *{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left))}
 header,main{max-width:1200px;margin:0 auto}h1{font-size:24px;margin:0 0 6px}.sub{color:var(--dim);margin:0 0 12px}
 .bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:18px}.grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.grp>span{color:var(--dim);font-size:13px}
@@ -897,7 +965,7 @@ a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{co
 .list .cap{display:none}.list .card.open .cap{display:block}.list .more{display:inline}.more{display:none;font-size:13px;color:var(--link);cursor:pointer;background:none;border:0;padding:0;font:inherit;font-size:13px;align-self:flex-start}
 @media (max-width:640px){.list .card{flex-direction:column}.list .card .pic{flex:none}}
 .empty{color:var(--dim);padding:40px 0;text-align:center}
-</style></head><body>
+</style>
 <header><h1>🔦 PR spotlights</h1><p class="sub" id="sub"></p>
 <div class="bar">
  <input id="q" type="search" placeholder="Search PR, title, caption, style, people…  ( / )" autocomplete="off">
@@ -910,14 +978,16 @@ a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{co
  <label class="grp"><span>Sort</span><select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="prd">PR number, high to low</option><option value="pra">PR number, low to high</option><option value="title">Title A to Z</option></select></label>
 </div></header>
 <main id="out"></main>
+<details class="how"><summary class="gh"><b>How it works</b></summary>__HOW__</details>
 <script>
-const DATA=__DATA__;
+const DATA=__DATA__, SHARED=__SHARED__;
+if(SHARED)document.getElementById('state').hidden=true;
 const S=(()=>{try{return JSON.parse(localStorage.getItem('spot')||'{}')}catch(e){return {}}})();
 const st=Object.assign({q:'',state:'all',gif:false,promo:false,team:'',repo:'',view:'grid',group:'',sort:'new'},S);
 const save=()=>{try{localStorage.setItem('spot',JSON.stringify(st))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const counts=DATA.reduce((a,d)=>(a[d.state]=(a[d.state]||0)+1,a),{});
-document.getElementById('sub').innerHTML=`${counts.held||0} held · ${counts.posted||0} posted${counts.failed?` · ${counts.failed} failed`:''} · ${(n=>n+(n===1?' GIF':' GIFs'))(DATA.filter(d=>d.gif).length)} · updated __NOW__. Click a command to copy it, a picture to see it whole.`;
+document.getElementById('sub').innerHTML=SHARED?`${DATA.length} spotlights · ${(n=>n+(n===1?' GIF':' GIFs'))(DATA.filter(d=>d.gif).length)} · updated __NOW__. Click a picture to see it whole.`:`${counts.held||0} held · ${counts.posted||0} posted${counts.failed?` · ${counts.failed} failed`:''} · ${(n=>n+(n===1?' GIF':' GIFs'))(DATA.filter(d=>d.gif).length)} · updated __NOW__. Click a command to copy it, a picture to see it whole.`;
 if(!counts.failed)document.querySelector('#state [data-v=failed]').hidden=true;
 const opts=(id,vals,all)=>{document.getElementById(id).innerHTML=`<option value="">${all}</option>`+[...new Set(vals)].sort().map(v=>`<option>${esc(v)}</option>`).join('')};
 opts('team',DATA.map(d=>d.team).filter(Boolean),'All teams');opts('repo',DATA.map(d=>d.repo),'All repos');
@@ -958,7 +1028,7 @@ document.getElementById('out').onclick=e=>{const t=e.target;
  if(t.matches('.more'))t.closest('.card').classList.toggle('open');
  if(t.matches('.cmd')&&navigator.clipboard){const v=t.textContent;navigator.clipboard.writeText(v).then(()=>{t.textContent='copied';setTimeout(()=>t.textContent=v,900)},()=>{})}};
 render();
-</script></body></html>
+</script>
 """
 
 
@@ -1037,6 +1107,7 @@ def main() -> None:
                 sys.exit(f"{short(repo, pr)}: no brief yet; run it first")
             run = publish(repo, pr, run, team)
             print(run["posted"])
+            print_share(team)
 
 
 if __name__ == "__main__":
