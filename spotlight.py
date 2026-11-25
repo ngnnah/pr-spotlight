@@ -13,7 +13,8 @@ of lessons from the diff, posted as a PR comment and in Slack. Each team is team
     ./spotlight.py poll               PRs merged since the team's start without a spotlight, three at most
     ./spotlight.py install            the launchd job: poll every 15 minutes, at login, and once on wake
     ./spotlight.py usage              the Codex limits from the newest session log
-    ./spotlight.py page               gallery.html: every spotlight, held or posted; GALLERY.md: the posted ones, for GitHub
+    ./spotlight.py page               gallery-team.html: the posted ones, for a team's claude.ai page; gallery.html: every
+                                      spotlight, held or posted, while no team has that page; GALLERY.md, for GitHub
 
 <pr> is <repo>#<number> (web-app#12) or a bare number for the team's first repo. --team picks the
 team file (default: the first in teams/).
@@ -854,8 +855,9 @@ def gallery_md(runs: list) -> None:
 
 
 def page() -> Path:
-    """gallery.html: every spotlight, held or posted, with picture and caption; filters, views, grouping and sorting
-    run in the page. poll and each post rewrite it, and GALLERY.md with it."""
+    """gallery-team.html (posted spotlights, for the team's claude.ai page) and, while no team has one,
+    gallery.html (every spotlight, held or posted); filters, views, grouping and sorting run in the page.
+    poll and each post rewrite them, and GALLERY.md with them."""
     runs = []
     for f in (ROOT / "spotlights").glob("*/*/run.json"):
         r = json.loads(f.read_text())
@@ -886,11 +888,17 @@ def page() -> Path:
         return (PAGE_HTML.replace("__NOW__", now).replace("__HOW__", how_html())
                 .replace("__SHARED__", "true" if shared else "false").replace("__DATA__", data))
 
+    # the team's copy on claude.ai: posted spotlights only; the Artifact tool wraps it in the document skeleton
+    team_page = ROOT / "gallery-team.html"
+    team_page.write_text(fill([i for i in items if i["state"] == "posted"], True))
+    # gallery.html, with held and failed ones and their commands, only while no team has a claude.ai page
+    # (Nhat, 2026-11-25); failures still show in the poll log and a Mac notification
     out = ROOT / "gallery.html"
+    if any(load_team(f.stem).get("gallery_url") for f in (ROOT / "teams").glob("*.yaml")):
+        out.unlink(missing_ok=True)
+        return team_page
     out.write_text('<!doctype html><html lang="en"><meta charset="utf-8">'
                    '<meta name="viewport" content="width=device-width, initial-scale=1">\n' + fill(items, False))
-    # the team's copy on claude.ai: posted spotlights only; the Artifact tool wraps it in the document skeleton
-    (ROOT / "gallery-team.html").write_text(fill([i for i in items if i["state"] == "posted"], True))
     return out
 
 
