@@ -1,12 +1,12 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pyyaml"]
+# dependencies = ["pyyaml", "pillow"]
 # ///
 """A spotlight for a merged PR in a team's repos: an image of the people behind it and a short caption
 of lessons from the diff, posted as a PR comment and in Slack. Each team is teams/<team>.yaml.
 
-    ./spotlight.py run <pr> [--dry-run] [--no-post] [--rebrief]
+    ./spotlight.py run <pr> [--dry-run] [--no-post] [--rebrief] [--gif]
     ./spotlight.py post <pr>          publish a spotlight already rendered with --no-post
     ./spotlight.py recaption <pr>     a new caption in the current format; image and title stay
     ./spotlight.py update <pr>        rewrite the posted PR comment with the run's current caption
@@ -22,6 +22,10 @@ Steps, each kept in spotlights/<repo>/<pr>/ so a rerun picks up where it stopped
 gather (gh) -> cast (people/*.yaml) -> seed (styles.yaml, map.yaml, log.jsonl) -> brief (claude -p:
 prompt.md, caption.md) -> render (codex exec: image.jpg) -> publish (git push, gh comment, Slack).
 --dry-run stops after the brief; --no-post stops after the render. Never reads ~/.codex/auth.json.
+
+A team's `gif_every: <n>` makes every n-th spotlight it renders a looping GIF; --gif makes this one a GIF.
+A GIF is one render: eight frames of the scene in a 2x4 sheet, cut apart into image.gif, with frame 5
+as image.jpg.
 """
 
 import argparse
@@ -37,6 +41,7 @@ import time
 from pathlib import Path
 
 import yaml
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent
 
@@ -497,20 +502,95 @@ def codex(prompt: str, photos: list[Path], out: Path) -> tuple[bool, str]:
     return out.exists(), "; ".join(filter(None, errors)) or said or f"no image; logs in {tmp}"
 
 
-def render(repo: str, pr: int, b: dict, people: list[dict]) -> Path:
+N_FRAMES = 8  # four looked too still (Nhat, 2026-11-25)
+FRAMES = """Eight frames in one tall portrait image: eight consecutive frames of one short looping flipbook of \
+the scene below, for an animated GIF. Two across and four down, read left to right then top to bottom, each frame \
+3:2 landscape, thin white gutters between them and a white margin around them. The camera, the framing, the \
+setting, the style and everyone's clothes stay exactly the same in all eight frames; only the action moves, a \
+small, clear step per frame: frame 1 the start, frames 2 to 7 the action building and peaking, frame 8 a step \
+that leads straight back into frame 1, so the loop runs smoothly. Faces stay the same in every frame.
+
+The scene, as one frame would be drawn:
+
+"""
+
+
+def wants_gif(team: dict) -> bool:
+    """Every `gif_every`-th render of the team is a GIF (Nhat, 2026-11-25: "a gif for every 5 image gens")."""
+    every = int(team.get("gif_every") or 0)
+    if not every:
+        return False
+    done = sum("render_s" in json.loads(f.read_text())
+               for r in team["repos"] for f in (ROOT / "spotlights" / r["repo"].split("/")[-1]).glob("*/run.json"))
+    return (done + 1) % every == 0
+
+
+def cut(sheet: Path) -> list[Image.Image]:
+    """The frames of a sheet in reading order, cut at the white gutters (rows, then columns)."""
+    img = Image.open(sheet).convert("RGB")
+    g = img.convert("L")
+    w, h = g.size
+    px = g.load()
+
+    def white(vals):
+        return sum(v > 235 for v in vals) >= 0.97 * len(vals)
+
+    def runs(flags, min_len=40):
+        out, start = [], None
+        for i, f in enumerate(flags + [True]):
+            if not f and start is None:
+                start = i
+            elif f and start is not None:
+                if i - start >= min_len:
+                    out.append((start, i))
+                start = None
+        return out
+
+    boxes = []
+    for y0, y1 in runs([white([px[x, y] for x in range(0, w, 2)]) for y in range(h)]):
+        for x0, x1 in runs([white([px[x, y] for y in range(y0, y1, 2)]) for x in range(w)]):
+            boxes.append((x0, y0, x1, y1))
+    if len(boxes) != N_FRAMES:
+        raise ValueError(f"found {len(boxes)} frames, not {N_FRAMES}")
+    fw = min(b[2] - b[0] for b in boxes)
+    fh = min(b[3] - b[1] for b in boxes)
+    return [img.crop((b[0], b[1], b[0] + fw, b[1] + fh)) for b in boxes]
+
+
+def render(repo: str, pr: int, b: dict, people: list[dict], gif: bool = False) -> Path:
+    """image.jpg; with gif, one frames sheet instead of the still: image.gif from its frames and
+    frame 5 as image.jpg. A sheet that doesn't cut into N_FRAMES frames falls back to a still."""
     d = spot_dir(repo, pr)
     png, jpg = d / "image.png", d / "image.jpg"
     photos = [ph for p in people for ph in p["photos"]]
     st = subprocess.run(["codex", "login", "status"], capture_output=True, text=True)
     if "ChatGPT" not in st.stdout + st.stderr:
         raise RuntimeError("Codex isn't signed in with ChatGPT; run: codex login")
-    ok, said = codex(b["prompt"], photos, png)
-    if not ok and re.search(r"similar|policy|third.party|blocked", said, re.I):
-        retry = b["prompt"] + ("\n\nDraw every referenced character, place and object in this image's own "
-                               "style rather than as it looks in the original work.")
-        ok, said = codex(retry, photos, png)
-    if not ok:
-        raise RuntimeError(f"render: {said[:500]}")
+
+    def draw(prompt: str) -> None:
+        ok, said = codex(prompt, photos, png)
+        if not ok and re.search(r"similar|policy|third.party|blocked", said, re.I):
+            ok, said = codex(prompt + ("\n\nDraw every referenced character, place and object in this image's "
+                                       "own style rather than as it looks in the original work."), photos, png)
+        if not ok:
+            raise RuntimeError(f"render: {said[:500]}")
+
+    if gif:
+        draw(FRAMES + b["prompt"])
+        try:
+            frames = cut(png)
+        except ValueError as e:
+            print(f"  gif: {e}; rendering a still instead", file=sys.stderr)
+            png.unlink()
+        else:
+            frames[N_FRAMES // 2].save(jpg, quality=85)  # the still: mid-action, where the scene says most
+            w = min(800, frames[0].width)  # never upscale: it only softens the frames
+            frames = [f.resize((w, round(w * f.height / f.width)), Image.LANCZOS) for f in frames]
+            frames[0].save(d / "image.gif", save_all=True, append_images=frames[1:], duration=300, loop=0,
+                           optimize=True)
+            png.unlink()
+            return jpg
+    draw(b["prompt"])
     sh(["sips", "-Z", "1600", "-s", "format", "jpeg", "-s", "formatOptions", "85", str(png), "--out", str(jpg)])
     png.unlink()
     return jpg
@@ -585,7 +665,8 @@ def about_of(repo: str, team: dict) -> str:
     return next((r.get("about", "") for r in team["repos"] if r["repo"] == repo), "")
 
 
-def run_one(repo: str, pr: int, team: dict, dry: bool = False, no_post: bool = False, rebrief: bool = False) -> dict:
+def run_one(repo: str, pr: int, team: dict, dry: bool = False, no_post: bool = False, rebrief: bool = False,
+            gif: bool = False) -> dict:
     run = read_run(repo, pr)
     tag = short(repo, pr)
     if run.get("posted"):
@@ -593,8 +674,11 @@ def run_one(repo: str, pr: int, team: dict, dry: bool = False, no_post: bool = F
         return run
     d = spot_dir(repo, pr)
     try:
+        if gif and not (d / "image.gif").exists():
+            (d / "image.jpg").unlink(missing_ok=True)  # --gif on a held still: render it again as a GIF
         if rebrief or not run.get("prompt"):
             (d / "image.jpg").unlink(missing_ok=True)  # a new brief needs a new image
+            (d / "image.gif").unlink(missing_ok=True)
             info = gather(repo, pr, about_of(repo, team))
             people = cast(info, load_people())
             today = dt.date.today()
@@ -619,8 +703,9 @@ def run_one(repo: str, pr: int, team: dict, dry: bool = False, no_post: bool = F
         if not (d / "image.jpg").exists():
             people = [{"photos": [ROOT / p for p in c["photos"]]} for c in run["cast"]]
             start = time.time()
-            render(repo, pr, run, people)
+            render(repo, pr, run, people, gif or wants_gif(team))
             run["render_s"] = round(time.time() - start)
+            run["gif"] = (d / "image.gif").exists()
             run.pop("error", None)
             write_run(repo, pr, run)
         print(f"  image: {d / 'image.jpg'}")
@@ -855,7 +940,7 @@ function render(){
  document.getElementById('sub').dataset.n=ds.length;if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
  if(!st.group){out.innerHTML=`<div class="${cls}">${ds.map(card).join('')}</div>`}
  else{const g=new Map();ds.forEach(d=>{const k=keyOf[st.group](d);g.set(k,[...(g.get(k)||[]),d])});
-  out.innerHTML=[...g].map(([k,v])=>`<details class="gd"${v.length<=3?' open':''}><summary class="gh"><b>${esc(k)}</b> · ${v.length}</summary><div class="${cls}">${v.map(card).join('')}</div></details>`).join('')}
+  out.innerHTML=[...g].map(([k,v])=>`<details class="gd"${v.length<=12?' open':''}><summary class="gh"><b>${esc(k)}</b> · ${v.length}</summary><div class="${cls}">${v.map(card).join('')}</div></details>`).join('')}
 }
 document.getElementById('state').onclick=e=>{if(e.target.dataset.v){st.state=e.target.dataset.v;save();render()}};
 document.getElementById('view').onclick=e=>{if(e.target.dataset.v){st.view=e.target.dataset.v;save();render()}};
@@ -922,6 +1007,7 @@ def main() -> None:
     ap.add_argument("--dry-run", action="store_true", help="stop after the brief")
     ap.add_argument("--no-post", action="store_true", help="stop after the render")
     ap.add_argument("--rebrief", action="store_true", help="write the brief again")
+    ap.add_argument("--gif", action="store_true", help="render this spotlight as a looping GIF")
     a = ap.parse_args()
     if a.cmd == "page":
         print(page())
@@ -943,7 +1029,7 @@ def main() -> None:
         elif a.cmd == "update":
             print(update_comment(repo, pr))
         elif a.cmd == "run":
-            sys.exit(1 if run_one(repo, pr, team, a.dry_run, a.no_post, a.rebrief).get("error") else 0)
+            sys.exit(1 if run_one(repo, pr, team, a.dry_run, a.no_post, a.rebrief, a.gif).get("error") else 0)
         else:
             run = read_run(repo, pr)
             if not run.get("prompt"):

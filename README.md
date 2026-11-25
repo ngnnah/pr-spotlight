@@ -60,10 +60,10 @@ My team: <team name>. Our repos: <owner/repo>, <owner/repo>. Slack channel for t
 
 ```text
 ./spotlight.py run <repo>#<pr> [--dry-run] [--no-post]   brief, render and post one spotlight
+./spotlight.py run <repo>#<pr> --gif                     the same, as a looping eight-frame GIF
 ./spotlight.py post <repo>#<pr>                          post one rendered with --no-post
 ./spotlight.py poll                                      PRs merged since the team's start, three at most
 ./spotlight.py install                                   the launchd job: poll every 15 minutes
-./gif.py <repo>#<pr>                                     a looping four-frame GIF in place of the still
 ./spotlight.py page                                      gallery.html: every spotlight, held or posted, to browse
 ```
 
