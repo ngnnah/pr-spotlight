@@ -770,7 +770,7 @@ def page() -> Path:
         if not state:
             continue
         items.append({
-            "repo": r["repo"].split("/")[-1], "pr": r["pr"], "tag": short(r["repo"], r["pr"]), "state": state,
+            "repo": r["repo"].split("/")[-1], "team": r.get("team") or "", "pr": r["pr"], "tag": short(r["repo"], r["pr"]), "state": state,
             "date": r.get("date", ""), "at": posted.get("at") or r.get("date", ""),
             "title": r.get("title", ""), "prTitle": r.get("pr_title", ""), "prUrl": r.get("pr_url", ""),
             "caption": _md(r.get("caption", "")), "style": r.get("style_name", ""), "reference": r.get("reference", ""),
@@ -791,7 +791,7 @@ PAGE_HTML = r"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <style>
 :root{--bg:#f7f8f4;--card:#fff;--ink:#22302a;--dim:#5d6b64;--edge:#dfe5dc;--held:#fdf1c7;--held-ink:#7a5d00;--posted:#dcefe2;--posted-ink:#256a3e;--failed:#fbe0e0;--failed-ink:#9a2e2e;--gif:#e3ecfb;--gif-ink:#2d5a9e;--link:#2f6db5;--code:#eef2f7}
 @media (prefers-color-scheme:dark){:root{--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--gif:#1f2f4a;--gif-ink:#a9c6f2;--link:#8cb8ee;--code:#26302d;color-scheme:dark}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left))}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left))}
 header,main{max-width:1200px;margin:0 auto}h1{font-size:24px;margin:0 0 6px}.sub{color:var(--dim);margin:0 0 12px}
 .bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:18px}.grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.grp>span{color:var(--dim);font-size:13px}
 .bar button{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
@@ -815,35 +815,39 @@ a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{co
 <header><h1>🔦 PR spotlights</h1><p class="sub" id="sub"></p>
 <div class="bar">
  <div class="grp" id="state"><button data-v="all">All</button><button data-v="held">Held</button><button data-v="posted">Posted</button><button data-v="failed">Failed</button></div>
- <div class="grp"><button id="gif" aria-pressed="false">▶ GIFs</button><button id="promo" aria-pressed="false">Releases</button></div>
+ <div class="grp"><button id="gif" aria-pressed="false">▶ GIFs</button><button id="promo" aria-pressed="false" title="Promotions from dev to main, where the reviewers star">dev → main</button></div>
+ <label class="grp" id="teamw"><span>Team</span><select id="team"></select></label>
+ <label class="grp"><span>Repo</span><select id="repo"></select></label>
  <div class="grp" id="view"><span>View</span><button data-v="grid">Grid</button><button data-v="list">List</button></div>
- <label class="grp"><span>Group by</span><select id="group"><option value="">None</option><option value="repo">Repo</option><option value="state">State</option><option value="style">Style</option><option value="date">Day</option><option value="cast">Cast</option></select></label>
+ <label class="grp"><span>Group by</span><select id="group"><option value="">None</option><option value="team">Team</option><option value="repo">Repo</option><option value="state">State</option><option value="style">Style</option><option value="date">Day</option><option value="cast">Cast</option></select></label>
  <label class="grp"><span>Sort</span><select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="prd">PR number, high to low</option><option value="pra">PR number, low to high</option><option value="title">Title A to Z</option></select></label>
 </div></header>
 <main id="out"></main>
 <script>
 const DATA=__DATA__;
 const S=(()=>{try{return JSON.parse(localStorage.getItem('spot')||'{}')}catch(e){return {}}})();
-const st=Object.assign({state:'all',gif:false,promo:false,view:'grid',group:'',sort:'new'},S);
+const st=Object.assign({state:'all',gif:false,promo:false,team:'',repo:'',view:'grid',group:'',sort:'new'},S);
 const save=()=>{try{localStorage.setItem('spot',JSON.stringify(st))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const counts=DATA.reduce((a,d)=>(a[d.state]=(a[d.state]||0)+1,a),{});
 document.getElementById('sub').innerHTML=`${counts.held||0} held · ${counts.posted||0} posted${counts.failed?` · ${counts.failed} failed`:''} · ${(n=>n+(n===1?' GIF':' GIFs'))(DATA.filter(d=>d.gif).length)} · updated __NOW__. Click a command to copy it, a picture to see it whole.`;
 if(!counts.failed)document.querySelector('#state [data-v=failed]').hidden=true;
+const opts=(id,vals,all)=>{document.getElementById(id).innerHTML=`<option value="">${all}</option>`+[...new Set(vals)].sort().map(v=>`<option>${esc(v)}</option>`).join('')};
+opts('team',DATA.map(d=>d.team).filter(Boolean),'All teams');opts('repo',DATA.map(d=>d.repo),'All repos');
 function card(d){
  const act=d.state==='posted'?`<a href="${esc(d.comment)}">PR comment</a>${d.slack?`<a href="${esc(d.slack)}">#jenkins</a>`:''}`:d.state==='held'?`<code class="cmd">./spotlight.py post ${esc(d.tag)}</code>`:`<span class="err">${esc(d.error)}</span>`;
  return `<article class="card"><div class="pic">${d.img?`<img loading="lazy" src="${esc(d.img)}" alt="${esc(d.title)}">`:''}${d.gif?'<span class="gtag">▶ GIF</span>':''}</div>
- <div class="body"><div class="row"><span class="pill ${d.state}">${d.state}</span>${d.promotion?'<span class="pill promo">release</span>':''}<a class="pr" href="${esc(d.prUrl)}">${esc(d.tag)}</a><span class="date">${esc(d.date)}</span></div>
+ <div class="body"><div class="row"><span class="pill ${d.state}">${d.state}</span>${d.promotion?'<span class="pill promo">dev → main</span>':''}<a class="pr" href="${esc(d.prUrl)}">${esc(d.tag)}</a><span class="date">${esc(d.date)}</span></div>
  <h2>${esc(d.title)}</h2><p class="prt">${esc(d.prTitle)}</p><button class="more">Caption</button><div class="cap">${d.caption}</div>
  <p class="meta">${esc(d.style)} · ${esc(d.reference)} · ${esc(d.cast)}</p><div class="links">${act}</div></div></article>`}
-const keyOf={repo:d=>d.repo,state:d=>d.state,style:d=>d.style,date:d=>d.date,cast:d=>d.cast.split(', ')[0]||'—'};
+const keyOf={team:d=>d.team||'—',repo:d=>d.repo,state:d=>d.state,style:d=>d.style,date:d=>d.date,cast:d=>d.cast.split(', ')[0]||'—'};
 const sorts={new:(a,b)=>b.at.localeCompare(a.at)||b.pr-a.pr,old:(a,b)=>a.at.localeCompare(b.at)||a.pr-b.pr,prd:(a,b)=>b.pr-a.pr,pra:(a,b)=>a.pr-b.pr,title:(a,b)=>a.title.localeCompare(b.title)};
 function render(){
  document.querySelectorAll('#state button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.state));
  document.querySelectorAll('#view button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.view));
  document.getElementById('gif').setAttribute('aria-pressed',st.gif);document.getElementById('promo').setAttribute('aria-pressed',st.promo);
- document.getElementById('group').value=st.group;document.getElementById('sort').value=st.sort;
- let ds=DATA.filter(d=>(st.state==='all'||d.state===st.state)&&(!st.gif||d.gif)&&(!st.promo||d.promotion)).sort(sorts[st.sort]);
+ document.getElementById('group').value=st.group;document.getElementById('team').value=st.team;document.getElementById('repo').value=st.repo;document.getElementById('sort').value=st.sort;
+ let ds=DATA.filter(d=>(st.state==='all'||d.state===st.state)&&(!st.gif||d.gif)&&(!st.promo||d.promotion)&&(!st.team||d.team===st.team)&&(!st.repo||d.repo===st.repo)).sort(sorts[st.sort]);
  const cls=st.view==='list'?'list':'grid', out=document.getElementById('out');
  if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
  if(!st.group){out.innerHTML=`<div class="${cls}">${ds.map(card).join('')}</div>`}
@@ -856,6 +860,8 @@ document.getElementById('gif').onclick=()=>{st.gif=!st.gif;save();render()};
 document.getElementById('promo').onclick=()=>{st.promo=!st.promo;save();render()};
 document.getElementById('group').onchange=e=>{st.group=e.target.value;save();render()};
 document.getElementById('sort').onchange=e=>{st.sort=e.target.value;save();render()};
+document.getElementById('team').onchange=e=>{st.team=e.target.value;save();render()};
+document.getElementById('repo').onchange=e=>{st.repo=e.target.value;save();render()};
 document.getElementById('out').onclick=e=>{const t=e.target;
  if(t.matches('.card img'))t.classList.toggle('big');
  if(t.matches('.more'))t.closest('.card').classList.toggle('open');
