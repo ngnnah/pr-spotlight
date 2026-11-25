@@ -796,7 +796,7 @@ header,main{max-width:1200px;margin:0 auto}h1{font-size:24px;margin:0 0 6px}.sub
 .bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:18px}.grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.grp>span{color:var(--dim);font-size:13px}
 .bar button{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
 .bar button[aria-pressed=true]{background:var(--ink);color:var(--bg)}.bar select{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 8px}
-h3.gh{font-size:16px;margin:22px 0 10px;color:var(--dim)}h3.gh b{color:var(--ink)}
+.gh{font-size:16px;margin:22px 0 10px;color:var(--dim);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}.gh::-webkit-details-marker{display:none}.gh::before{content:'▸';color:var(--dim);transition:transform .15s}details[open]>.gh::before{transform:rotate(90deg)}.gh b{color:var(--ink)}.gd>.grid,.gd>.list{margin-bottom:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
 .card{background:var(--card);border:1px solid var(--edge);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
 .card .pic{position:relative}.card img{width:100%;display:block;aspect-ratio:3/2;object-fit:cover;cursor:zoom-in}.card img.big{aspect-ratio:auto;object-fit:contain;cursor:zoom-out}
@@ -852,7 +852,7 @@ function render(){
  if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
  if(!st.group){out.innerHTML=`<div class="${cls}">${ds.map(card).join('')}</div>`}
  else{const g=new Map();ds.forEach(d=>{const k=keyOf[st.group](d);g.set(k,[...(g.get(k)||[]),d])});
-  out.innerHTML=[...g].map(([k,v])=>`<h3 class="gh"><b>${esc(k)}</b> · ${v.length}</h3><div class="${cls}">${v.map(card).join('')}</div>`).join('')}
+  out.innerHTML=[...g].map(([k,v])=>`<details class="gd"${v.length<=3?' open':''}><summary class="gh"><b>${esc(k)}</b> · ${v.length}</summary><div class="${cls}">${v.map(card).join('')}</div></details>`).join('')}
 }
 document.getElementById('state').onclick=e=>{if(e.target.dataset.v){st.state=e.target.dataset.v;save();render()}};
 document.getElementById('view').onclick=e=>{if(e.target.dataset.v){st.view=e.target.dataset.v;save();render()}};
