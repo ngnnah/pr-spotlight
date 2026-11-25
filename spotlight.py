@@ -795,7 +795,7 @@ PAGE_HTML = r"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 header,main{max-width:1200px;margin:0 auto}h1{font-size:24px;margin:0 0 6px}.sub{color:var(--dim);margin:0 0 12px}
 .bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:18px}.grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.grp>span{color:var(--dim);font-size:13px}
 .bar button{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
-.bar button[aria-pressed=true]{background:var(--ink);color:var(--bg)}.bar select{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 8px}
+.bar button[aria-pressed=true]{background:var(--ink);color:var(--bg)}#q{flex:1 1 100%;font:inherit;font-size:16px;padding:9px 14px;border:1px solid var(--edge);border-radius:10px;background:var(--card);color:var(--ink)}mark{background:var(--held);color:inherit;border-radius:3px}.bar select{font:inherit;font-size:14px;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 8px}
 .gh{font-size:16px;margin:22px 0 10px;color:var(--dim);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}.gh::-webkit-details-marker{display:none}.gh::before{content:'▸';color:var(--dim);transition:transform .15s}details[open]>.gh::before{transform:rotate(90deg)}.gh b{color:var(--ink)}.gd>.grid,.gd>.list{margin-bottom:8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
 .card{background:var(--card);border:1px solid var(--edge);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
@@ -814,6 +814,7 @@ a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{co
 </style></head><body>
 <header><h1>🔦 PR spotlights</h1><p class="sub" id="sub"></p>
 <div class="bar">
+ <input id="q" type="search" placeholder="Search PR, title, caption, style, people…  ( / )" autocomplete="off">
  <div class="grp" id="state"><button data-v="all">All</button><button data-v="held">Held</button><button data-v="posted">Posted</button><button data-v="failed">Failed</button></div>
  <div class="grp"><button id="gif" aria-pressed="false">▶ GIFs</button><button id="promo" aria-pressed="false" title="Promotions from dev to main, where the reviewers star">dev → main</button></div>
  <label class="grp" id="teamw"><span>Team</span><select id="team"></select></label>
@@ -826,7 +827,7 @@ a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{co
 <script>
 const DATA=__DATA__;
 const S=(()=>{try{return JSON.parse(localStorage.getItem('spot')||'{}')}catch(e){return {}}})();
-const st=Object.assign({state:'all',gif:false,promo:false,team:'',repo:'',view:'grid',group:'',sort:'new'},S);
+const st=Object.assign({q:'',state:'all',gif:false,promo:false,team:'',repo:'',view:'grid',group:'',sort:'new'},S);
 const save=()=>{try{localStorage.setItem('spot',JSON.stringify(st))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const counts=DATA.reduce((a,d)=>(a[d.state]=(a[d.state]||0)+1,a),{});
@@ -840,16 +841,18 @@ function card(d){
  <div class="body"><div class="row"><span class="pill ${d.state}">${d.state}</span>${d.promotion?'<span class="pill promo">dev → main</span>':''}<a class="pr" href="${esc(d.prUrl)}">${esc(d.tag)}</a><span class="date">${esc(d.date)}</span></div>
  <h2>${esc(d.title)}</h2><p class="prt">${esc(d.prTitle)}</p><button class="more">Caption</button><div class="cap">${d.caption}</div>
  <p class="meta">${esc(d.style)} · ${esc(d.reference)} · ${esc(d.cast)}</p><div class="links">${act}</div></div></article>`}
+const hay=d=>[d.tag,'#'+d.pr,d.repo,d.team,d.state,d.title,d.prTitle,d.caption.replace(/<[^>]+>/g,' '),d.style,d.reference,d.cast,d.date,d.gif?'gif':'',d.promotion?'dev main promotion release':''].join(' ').toLowerCase();
+DATA.forEach(d=>d._h=hay(d));
 const keyOf={team:d=>d.team||'—',repo:d=>d.repo,state:d=>d.state,style:d=>d.style,date:d=>d.date,cast:d=>d.cast.split(', ')[0]||'—'};
 const sorts={new:(a,b)=>b.at.localeCompare(a.at)||b.pr-a.pr,old:(a,b)=>a.at.localeCompare(b.at)||a.pr-b.pr,prd:(a,b)=>b.pr-a.pr,pra:(a,b)=>a.pr-b.pr,title:(a,b)=>a.title.localeCompare(b.title)};
 function render(){
  document.querySelectorAll('#state button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.state));
  document.querySelectorAll('#view button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.view));
  document.getElementById('gif').setAttribute('aria-pressed',st.gif);document.getElementById('promo').setAttribute('aria-pressed',st.promo);
- document.getElementById('group').value=st.group;document.getElementById('team').value=st.team;document.getElementById('repo').value=st.repo;document.getElementById('sort').value=st.sort;
- let ds=DATA.filter(d=>(st.state==='all'||d.state===st.state)&&(!st.gif||d.gif)&&(!st.promo||d.promotion)&&(!st.team||d.team===st.team)&&(!st.repo||d.repo===st.repo)).sort(sorts[st.sort]);
+ document.getElementById('q').value=st.q;document.getElementById('group').value=st.group;document.getElementById('team').value=st.team;document.getElementById('repo').value=st.repo;document.getElementById('sort').value=st.sort;
+ let ds=DATA.filter(d=>(st.state==='all'||d.state===st.state)&&(!st.gif||d.gif)&&(!st.promo||d.promotion)&&(!st.team||d.team===st.team)&&(!st.repo||d.repo===st.repo)&&st.q.toLowerCase().split(/\s+/).filter(Boolean).every(w=>d._h.includes(w))).sort(sorts[st.sort]);
  const cls=st.view==='list'?'list':'grid', out=document.getElementById('out');
- if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
+ document.getElementById('sub').dataset.n=ds.length;if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
  if(!st.group){out.innerHTML=`<div class="${cls}">${ds.map(card).join('')}</div>`}
  else{const g=new Map();ds.forEach(d=>{const k=keyOf[st.group](d);g.set(k,[...(g.get(k)||[]),d])});
   out.innerHTML=[...g].map(([k,v])=>`<details class="gd"${v.length<=3?' open':''}><summary class="gh"><b>${esc(k)}</b> · ${v.length}</summary><div class="${cls}">${v.map(card).join('')}</div></details>`).join('')}
@@ -860,6 +863,8 @@ document.getElementById('gif').onclick=()=>{st.gif=!st.gif;save();render()};
 document.getElementById('promo').onclick=()=>{st.promo=!st.promo;save();render()};
 document.getElementById('group').onchange=e=>{st.group=e.target.value;save();render()};
 document.getElementById('sort').onchange=e=>{st.sort=e.target.value;save();render()};
+let qt;document.getElementById('q').oninput=e=>{clearTimeout(qt);qt=setTimeout(()=>{st.q=e.target.value;save();render();e.target.focus()},120)};
+document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.id!=='q'){e.preventDefault();document.getElementById('q').focus()}if(e.key==='Escape'&&document.activeElement.id==='q'){st.q='';e.target.value='';save();render()}});
 document.getElementById('team').onchange=e=>{st.team=e.target.value;save();render()};
 document.getElementById('repo').onchange=e=>{st.repo=e.target.value;save();render()};
 document.getElementById('out').onclick=e=>{const t=e.target;
