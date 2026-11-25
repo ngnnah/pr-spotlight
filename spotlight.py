@@ -967,6 +967,7 @@ a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{co
 .list .cap{display:none}.list .card.open .cap{display:block}.list .more{display:inline}.more{display:none;font-size:13px;color:var(--link);cursor:pointer;background:none;border:0;padding:0;font:inherit;font-size:13px;align-self:flex-start}
 @media (max-width:640px){.list .card{flex-direction:column}.list .card .pic{flex:none}}
 .empty{color:var(--dim);padding:40px 0;text-align:center}
+.count{margin:-6px 0 14px;font-size:14px;font-weight:600;color:var(--dim);font-variant-numeric:tabular-nums}
 </style>
 <header><h1>🔦 PR spotlights</h1><p class="sub" id="sub"></p>
 <div class="bar">
@@ -978,7 +979,7 @@ a{color:var(--link)}.pr{font-weight:600}h2{font-size:18px;margin:2px 0 0}.prt{co
  <div class="grp" id="view"><span>View</span><button data-v="grid">Grid</button><button data-v="list">List</button></div>
  <label class="grp"><span>Group by</span><select id="group"><option value="">None</option><option value="team">Team</option><option value="repo">Repo</option><option value="state">State</option><option value="style">Style</option><option value="date">Day</option><option value="cast">Cast</option></select></label>
  <label class="grp"><span>Sort</span><select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="prd">PR number, high to low</option><option value="pra">PR number, low to high</option><option value="title">Title A to Z</option></select></label>
-</div></header>
+</div><p class="count" id="count" aria-live="polite"></p></header>
 <main id="out"></main>
 <details class="how"><summary class="gh"><b>How it works</b></summary>__HOW__</details>
 <script>
@@ -1010,7 +1011,10 @@ function render(){
  document.getElementById('q').value=st.q;document.getElementById('group').value=st.group;document.getElementById('team').value=st.team;document.getElementById('repo').value=st.repo;document.getElementById('sort').value=st.sort;
  let ds=DATA.filter(d=>(st.state==='all'||d.state===st.state)&&(!st.gif||d.gif)&&(!st.promo||d.promotion)&&(!st.team||d.team===st.team)&&(!st.repo||d.repo===st.repo)&&st.q.toLowerCase().split(/\s+/).filter(Boolean).every(w=>d._h.includes(w))).sort(sorts[st.sort]);
  const cls=st.view==='list'?'list':'grid', out=document.getElementById('out');
- document.getElementById('sub').dataset.n=ds.length;if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
+ document.getElementById('sub').dataset.n=ds.length;
+ const filt=[st.q&&`“${st.q}”`,st.state!=='all'&&st.state,st.gif&&'GIFs',st.promo&&'dev → main',st.team&&st.team,st.repo&&st.repo].filter(Boolean);
+ document.getElementById('count').textContent=filt.length?`Showing ${ds.length} of ${DATA.length} · ${filt.join(' · ')}`:`Showing all ${DATA.length}`;
+ if(!ds.length){out.innerHTML='<p class="empty">Nothing matches.</p>';return}
  if(!st.group){out.innerHTML=`<div class="${cls}">${ds.map(card).join('')}</div>`}
  else{const g=new Map();ds.forEach(d=>{const k=keyOf[st.group](d);g.set(k,[...(g.get(k)||[]),d])});
   out.innerHTML=[...g].map(([k,v])=>`<details class="gd"${v.length<=12?' open':''}><summary class="gh"><b>${esc(k)}</b> · ${v.length}</summary><div class="${cls}">${v.map(card).join('')}</div></details>`).join('')}
