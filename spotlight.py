@@ -13,6 +13,7 @@ of lessons from the diff, posted as a PR comment and in Slack. Each team is team
     ./spotlight.py poll               PRs merged since the team's start without a spotlight, three at most
     ./spotlight.py install            the launchd job: poll every 15 minutes, at login, and once on wake
     ./spotlight.py usage              the Codex limits from the newest session log
+    ./spotlight.py page               gallery.html: every spotlight, held or posted, with picture and caption
 
 <pr> is <repo>#<number> (web-app#12) or a bare number for the team's first repo. --team picks the
 team file (default: the first in teams/).
@@ -26,6 +27,7 @@ prompt.md, caption.md) -> render (codex exec: image.jpg) -> publish (git push, g
 import argparse
 import datetime as dt
 import hashlib
+import html
 import json
 import re
 import subprocess
@@ -709,6 +711,97 @@ def poll(team: dict) -> None:
             notify(f"{tag} failed ({r['tries']} of {TRIES}): {r['error'][:80]}")
         elif not auto:
             notify(f"{tag} rendered: {r['title']}. Post it with ./spotlight.py post {tag} --team {team['id']}")
+    page()
+
+
+def _md(s: str) -> str:
+    """The caption's markdown, as the PR comment shows it: bold, code and bullets."""
+    out, items = [], []
+    for line in html.escape(s).splitlines():
+        line = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", line)
+        line = re.sub(r"`(.+?)`", r"<code>\1</code>", line)
+        if line.startswith("- "):
+            items.append(f"<li>{line[2:]}</li>")
+            continue
+        if items:
+            out.append("<ul>" + "".join(items) + "</ul>")
+            items = []
+        if line.strip():
+            out.append(f"<p>{line}</p>")
+    if items:
+        out.append("<ul>" + "".join(items) + "</ul>")
+    return "".join(out)
+
+
+def page() -> Path:
+    """gallery.html: every spotlight, held or posted, newest first, with its picture and caption. poll rewrites it."""
+    cards, counts = [], {"held": 0, "posted": 0, "failed": 0}
+    runs = []
+    for f in (ROOT / "spotlights").glob("*/*/run.json"):
+        r = json.loads(f.read_text())
+        if r.get("prompt"):
+            runs.append((f.parent, r))
+    runs.sort(key=lambda x: (x[1].get("posted", {}).get("at") or x[1].get("date") or "", x[1].get("pr", 0)), reverse=True)
+    for d, r in runs:
+        img = next((d / n for n in ("image.gif", "image.jpg") if (d / n).exists()), None)
+        comment = (r.get("posted") or {}).get("comment")
+        state = "posted" if comment else "failed" if r.get("error") and not img else "held" if img else ""
+        if not state:
+            continue
+        counts[state] += 1
+        tag = short(r["repo"], r["pr"])
+        if state == "posted":
+            action = f'<a class="btn" href="{html.escape(comment)}">PR comment</a>'
+        elif state == "held":
+            action = f'<code class="cmd">./spotlight.py post {tag}</code>'
+        else:
+            action = f'<span class="err">{html.escape(r.get("error", "")[:200])}</span>'
+        cast = ", ".join(c["name"] + (" 📷" if c.get("likeness") else "") for c in r.get("cast", []))
+        pic = (f'<img loading="lazy" src="{img.relative_to(ROOT)}" alt="{html.escape(r.get("title", ""))}">' if img else "")
+        cards.append(f"""<article class="card {state}" data-state="{state}">
+  {pic}
+  <div class="body">
+    <div class="row"><span class="pill {state}">{state}</span><a class="pr" href="{html.escape(r.get('pr_url', ''))}">{tag}</a><span class="date">{r.get('date', '')}</span></div>
+    <h2>{html.escape(r.get('title', ''))}</h2>
+    <p class="prt">{html.escape(r.get('pr_title', ''))}</p>
+    <div class="cap">{_md(r.get('caption', ''))}</div>
+    <p class="meta">{html.escape(r.get('style_name', ''))} · {html.escape(r.get('reference', ''))} · {html.escape(cast)}</p>
+    {action}
+  </div>
+</article>""")
+    now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
+    out = ROOT / "gallery.html"
+    out.write_text(f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>PR spotlights</title>
+<style>
+:root{{--bg:#f7f8f4;--card:#fff;--ink:#22302a;--dim:#5d6b64;--edge:#dfe5dc;--held:#fdf1c7;--held-ink:#7a5d00;--posted:#dcefe2;--posted-ink:#256a3e;--failed:#fbe0e0;--failed-ink:#9a2e2e;--link:#2f6db5;--code:#eef2f7}}
+@media (prefers-color-scheme:dark){{:root{{--bg:#151a18;--card:#1e2522;--ink:#e6ece8;--dim:#9fb0a7;--edge:#2c3631;--held:#4a3f17;--held-ink:#f5dc8a;--posted:#1f3d2b;--posted-ink:#9fe0b4;--failed:#4a2222;--failed-ink:#f3b0b0;--link:#8cb8ee;--code:#26302d;color-scheme:dark}}}}
+*{{box-sizing:border-box}}body{{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif;padding:24px max(16px,env(safe-area-inset-left))}}
+header{{max-width:1200px;margin:0 auto 18px}}h1{{font-size:24px;margin:0 0 6px}}.sub{{color:var(--dim);margin:0 0 12px}}
+.tabs button{{font:inherit;border:1px solid var(--edge);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;margin:0 6px 6px 0;cursor:pointer}}
+.tabs button[aria-pressed=true]{{background:var(--ink);color:var(--bg)}}
+main{{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}}
+.card{{background:var(--card);border:1px solid var(--edge);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}}
+.card img{{width:100%;display:block;aspect-ratio:3/2;object-fit:cover;cursor:zoom-in}}.card img.big{{aspect-ratio:auto;object-fit:contain;cursor:zoom-out}}
+.body{{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}}
+.row{{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}}.date{{color:var(--dim);margin-left:auto}}
+.pill{{border-radius:999px;padding:1px 9px;font-weight:700;font-size:12px}}.pill.held{{background:var(--held);color:var(--held-ink)}}.pill.posted{{background:var(--posted);color:var(--posted-ink)}}.pill.failed{{background:var(--failed);color:var(--failed-ink)}}
+a{{color:var(--link)}}.pr{{font-weight:600}}h2{{font-size:18px;margin:2px 0 0}}.prt{{color:var(--dim);margin:0;font-size:13px}}
+.cap p{{margin:4px 0}}.cap ul{{margin:4px 0;padding-left:18px}}.cap li{{margin:2px 0}}code{{background:var(--code);border-radius:4px;padding:0 4px;font-size:13px;overflow-wrap:anywhere}}
+.meta{{color:var(--dim);font-size:12.5px;margin:6px 0 4px}}.btn{{align-self:flex-start;font-weight:600}}.cmd{{align-self:flex-start;cursor:copy}}.err{{color:var(--failed-ink);font-size:13px}}
+</style></head><body>
+<header><h1>🔦 PR spotlights</h1>
+<p class="sub">{counts['held']} held · {counts['posted']} posted{f" · {counts['failed']} failed" if counts['failed'] else ""} · updated {now}. Held ones wait for <code>./spotlight.py post &lt;repo&gt;#&lt;pr&gt;</code>; click a command to copy it, a picture to see it whole.</p>
+<nav class="tabs"><button aria-pressed="true" data-f="all">All</button><button aria-pressed="false" data-f="held">Held</button><button aria-pressed="false" data-f="posted">Posted</button>{'<button aria-pressed="false" data-f="failed">Failed</button>' if counts['failed'] else ''}</nav></header>
+<main>{"".join(cards)}</main>
+<script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{{document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+document.querySelectorAll('.card').forEach(c=>c.hidden=b.dataset.f!=='all'&&c.dataset.state!==b.dataset.f)}});
+document.querySelectorAll('.card img').forEach(i=>i.onclick=()=>i.classList.toggle('big'));
+document.querySelectorAll('.cmd').forEach(c=>c.onclick=()=>navigator.clipboard&&navigator.clipboard.writeText(c.textContent).then(()=>{{const t=c.textContent;c.textContent='copied';setTimeout(()=>c.textContent=t,900)}}));
+</script></body></html>
+""")
+    return out
 
 
 def install(team: dict) -> None:
@@ -751,13 +844,16 @@ def usage() -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["run", "post", "recaption", "update", "poll", "install", "usage"])
+    ap.add_argument("cmd", choices=["run", "post", "recaption", "update", "poll", "install", "usage", "page"])
     ap.add_argument("pr", nargs="?", help="<repo>#<number>, or a bare number for the team's first repo")
     ap.add_argument("--team", default=DEFAULT_TEAM, help=f"teams/<team>.yaml (default: {DEFAULT_TEAM})")
     ap.add_argument("--dry-run", action="store_true", help="stop after the brief")
     ap.add_argument("--no-post", action="store_true", help="stop after the render")
     ap.add_argument("--rebrief", action="store_true", help="write the brief again")
     a = ap.parse_args()
+    if a.cmd == "page":
+        print(page())
+        return
     if a.cmd == "usage":
         print(usage())
         return

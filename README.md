@@ -64,6 +64,7 @@ My team: <team name>. Our repos: <owner/repo>, <owner/repo>. Slack channel for t
 ./spotlight.py poll                                      PRs merged since the team's start, three at most
 ./spotlight.py install                                   the launchd job: poll every 15 minutes
 ./gif.py <repo>#<pr>                                     a looping four-frame GIF in place of the still
+./spotlight.py page                                      gallery.html: every spotlight, held or posted, to browse
 ```
 
 `--team <team>` picks a team file when there's more than one.

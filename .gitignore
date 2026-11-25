@@ -2,3 +2,4 @@ __pycache__/
 spotlights/*/*/image.png
 poll.log
 poll-*.log
+gallery.html
